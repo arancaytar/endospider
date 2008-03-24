@@ -17,5 +17,5 @@ function t($text, $placeholders = array()) {
 function l($path = "") {
   static $url = "";
   if (!$url) $url = dirname($_SERVER['PHP_SELF']);
-  return $url . $path;
+  return "$url/$path";
 }
