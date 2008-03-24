@@ -31,7 +31,7 @@ function spider_nation_stack_($nation = false) {
 
 function spider_nation($nation_name) {
   $response = http("http://www.nationstates.net/page=display_nation/nation=$nation_name");
-  if (!preg_match('/src="\/images\/smalleyelogo\.jpg" width="120" height="90"/', $response->data)) return false;
+  if (!preg_match('/src="\/images\/smalleyelogo\.jpg"/', $response->data)) return false;
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   $nation['region'] = $match[1];
   preg_match('/Endorsements Received: ([0-9]*) \((.*?)\)/', $response->data, $match);
