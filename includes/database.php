@@ -15,7 +15,7 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
     case DB_INSERT:
       $sql = "$action INTO `$table` (`". implode("`, `", $schema['fields']) ."`) VALUES ";
       foreach ($key as $id) {
-        $record = is_array(id) ? $id + $attributes : array($schema['key'] => $id) + $attributes;
+        $record = is_array($schema['key']) ? $id + $attributes : array($schema['key'] => $id) + $attributes;
         foreach ($schema['fields'] as $field) {
           $cols[] = "'". $record[$field] ."'";
         }
@@ -66,14 +66,14 @@ function db_schema($record = NULL) {
       'fields' => array(
         'nation', 'region'
       ),
-      'key' => array('nation'),
+      'key' => 'nation',
     ),
     
     'region' => array(
       'fields' => array(
         'region', 'size', 'delegate' 
       ),
-      'key' => array('region'),
+      'key' => 'region',
     ),
     
     'endorsement' => array(
