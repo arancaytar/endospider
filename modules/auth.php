@@ -19,5 +19,5 @@ function form_auth_login() {
 }
 
 function form_auth_login_submit($input) {
-  setcookie('endospider_pass', $input);
+  setcookie('endospider_pass', $input['password']);
 }
