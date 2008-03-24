@@ -15,6 +15,7 @@ require_once "includes/status.php";
 require_once "modules/auth.php";
 require_once "modules/error.php";
 require_once "modules/gather.php";
+require_once "modules/overview.php";
 
 require_once "template/html.php";
 
