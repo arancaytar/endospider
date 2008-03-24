@@ -21,6 +21,7 @@ require_once "template/html.php";
 function main() {
   ob_start('ob_gzhandler');
   $page = alias_execute($_GET['q']);
+  if (!is_object($page)) $page = (object)(array('content' => $page));
   if (!$page->content_type) $page->content_type = 'application/xhtml+xml';
   if (!$page->code) $page->code = 200;
   if (!$page->template) $page->template = 'html';
