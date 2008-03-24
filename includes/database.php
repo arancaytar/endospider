@@ -17,6 +17,7 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
       $records = array();
       foreach ($key as $id) {
         $record = is_array($schema['key']) ? $id + $attributes : array($schema['key'] => $id) + $attributes;
+        $cols = array();
         foreach ($schema['fields'] as $field) {
           $cols[] = "'". $record[$field] ."'";
         }

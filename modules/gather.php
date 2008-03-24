@@ -35,7 +35,7 @@ function gather_index($region) {
   status(t('There are @n nations in region; @del is delegate.',
     array('@n' => $meta['size'], '@del' => $meta['delegate'])));
   status(t('Writing meta info to database...'));
-  db_write('region', $region, $meta);
+  db_write('region', $region, $meta, DB_REPLACE);
   status(t('Now indexing UN nations in region...'));
   for ($i = 0; $i < $meta['size']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
