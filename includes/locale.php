@@ -4,7 +4,7 @@ function t($text, $placeholders = array()) {
   foreach ($placeholders as $key => &$value) {
     switch ($key[0]) {
       case '@':
-        $value = html_entities($value);
+        $value = htmlentities($value);
         break;
       case '%':
         $value = '<strong>'. htmlentities($value) .'</strong>';
