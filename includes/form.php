@@ -5,7 +5,7 @@ function form($id) {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $input = form_check_input($form, $_POST);
     $return = form_execute($id, $input);
-    if (!headers_sent()) {
+    if (!headers_sent() && $return) {
       header("Location: ". l($return), 303);
     }
   } else {
