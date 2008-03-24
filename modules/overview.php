@@ -5,11 +5,11 @@ function page() {
 }
 
 function page_overview() {
-  $sql = "SELECT `r`.`region`, `size`, COUNT(`nation`) AS `un`, `delegate`, `scan_started`, 
-  UNIX_TIMESTAMP(`scan_ended`) - UNIX_TIMESTAMP(`scan_started`) AS `scan_length`,
-          FROM `region` `r` JOIN `nation` `n` ON `r`.`region` == `n`.`region`
+  $sql = 'SELECT `r`.`region`, `size`, COUNT(`nation`) AS `un`, `delegate`, `scan_started`, 
+  UNIX_TIMESTAMP(`scan_ended`) - UNIX_TIMESTAMP(`scan_started`) AS `scan_length`
+          FROM `'. DB_PREFIX .'region` `r` JOIN `'. DB_PREFIX .'nation` `n` ON `r`.`region` = `n`.`region`
           GROUP BY `r`.`region`
-          ORDER BY `r`.`region`";
+          ORDER BY `r`.`region`';
   $res = db_query($sql);
   while ($row = db_fetch_array($res)) $regions[] = $row;
   
