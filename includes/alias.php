@@ -19,7 +19,7 @@ function alias_execute($path) {
  	for ($i = 0; $i < count($tokens); $i++) {
  		$function = 'page_'. implode('_', $tokens);
 		if (function_exists($function)) {
-			return $tokens($args);
+			return $function($args);
 		}
 		array_unshift($args, array_pop($tokens));
  	}
