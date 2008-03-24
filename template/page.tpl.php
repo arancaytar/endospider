@@ -45,12 +45,12 @@ if ($base) {
 	<div class="main">
 		<div class="main2">
 			<h2><?=$title?></h2>
-			<?=$page?>			
+			<?=$content?>			
 		</div>
 	</div>
 </div>
 <div class="filled-box" id="footer">
-<em>EndoSpider 3.0 alpha</em><br/>
+<em>EndoSpider <?=VERSION?> rv:<?=VERSION_RV?></em><br/>
 <a href="http://validator.w3.org/check?uri=referer"><img
 					src="http://www.w3.org/Icons/valid-xhtml10"
 					alt="Valid XHTML 1.0 Strict" height="31" width="88" style="float:left" /></a>
