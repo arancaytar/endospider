@@ -19,12 +19,14 @@ require_once "modules/gather.php";
 function main() {
   ob_start('ob_gzhandler');
   $page = alias_execute($_GET['q']);
-  header("Content-type: ". $page->content_type);
+  if (!$page->content_type) $page->content_type = 'application/xhtml+xml';
+  if (!$page->code) $page->code = 200;
+  header("Content-type: ". $page->content_type, $page->code);
   if (!empty($page->template)) {
     $function = 'template_'. $page->template;
     print $function($page);
   } else print $page->content;
-  ob_end();
+  ob_end_flush();
 }
 
 main();
