@@ -7,14 +7,14 @@ function t($text, $placeholders = array()) {
         $value = html_entities($value);
         break;
       case '%':
-        $value = '<strong>'. html_entities($value) .'</strong>';
+        $value = '<strong>'. htmlentities($value) .'</strong>';
         break;
     }
   }
   return str_replace(array_keys($placeholders), $placeholders, $text);
 }
 
-function l($path) {
+function l($path = "") {
   static $url = "";
   if (!$url) $url = dirname($_SERVER['PHP_SELF']);
   return $url . $path;
