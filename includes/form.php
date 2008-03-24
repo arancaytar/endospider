@@ -31,7 +31,7 @@ function form_execute($id, $input) {
 }
 
 function form_render($form) {
-  $out = '<form method="post" action="' + $_SERVER['REQUEST_URI'] + '">';
+  $out = '<form method="post" action="'. $_SERVER['REQUEST_URI'] .'">';
   $out .= form_render_($form);
   $out .= '</form>';
   return $out;
@@ -62,12 +62,19 @@ function form_render_field($field, $id, $prefix) {
   if ($html_id) $html_id .= "[$id]";
   else $html_id = $id;
   $function = 'form_render_field_'. $field['#type'];
-  if (function_exists($function)) return $function($field, $html_id); 
+  if (function_exists($function)) $out = $function($field, $html_id); 
+  if (!is_array($out)) $out = array($out);
+  return $out;
 }
 
 function form_render_field_text($field, $name) {
   $id = preg_replace('/[\[\]]+/', '-', $name);
   return '<label for="'. $id .'">'. $field['#title'] .'</label><input type="text" id="'. $id .'" name="'. $name .'" />';
+}
+
+function form_render_field_password($field, $name) {
+  $id = preg_replace('/[\[\]]+/', '-', $name);
+  return '<label for="'. $id .'">'. $field['#title'] .'</label><input type="password" id="'. $id .'" name="'. $name .'" />';
 }
 
 function form_render_field_submit($field, $id) {
