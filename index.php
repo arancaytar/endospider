@@ -17,7 +17,7 @@ require_once "modules/gather.php";
 
 function main() {
   ob_start('ob_gzhandler');
-  $page = execute_active_handler($_GET['q']);
+  $page = alias_execute($_GET['q']);
   send_content_type($page->content_type);
   if (!empty($page->template)) {
     $function = 'template_'. $page->template;
