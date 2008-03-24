@@ -90,7 +90,11 @@ function db_schema($record = NULL) {
 function db_query($sql) {
   static $link;
   if (!$link) $link = db_connect_();
-  mysql_query($sql);
+  return mysql_query($sql);
+}
+
+function db_fetch_array($res) {
+  return mysql_fetch_array($res);
 }
 
 function db_connect_() {
