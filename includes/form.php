@@ -7,10 +7,10 @@ function form($id) {
     $return = form_execute($id, $input);
     if (!headers_sent() && $return) {
       header("Location: ". l($return), 303);
+      exit;
     }
-  } else {
-    return form_render($form);
   }
+  return form_render($form);
 }
 
 function form_build($id) {
