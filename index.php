@@ -23,6 +23,7 @@ function main() {
   $page = alias_execute($_GET['q']);
   if (!$page->content_type) $page->content_type = 'application/xhtml+xml';
   if (!$page->code) $page->code = 200;
+  if (!$page->template) $page->template = 'html';
   header("Content-type: ". $page->content_type, $page->code);
   if (!empty($page->template)) {
     $function = 'template_'. $page->template;
