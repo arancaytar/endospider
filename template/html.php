@@ -28,6 +28,7 @@ function main_menu($url) {
     $out .= '<li><a href="'. l($link) .'">'. $text .'</a></li>';
   }
   $out .= '</ul>';
+  return $out;
 }
 
 function template_html($page) {
