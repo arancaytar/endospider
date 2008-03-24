@@ -15,9 +15,6 @@
 function alias_execute($path) {
  	$tokens = explode("/", $path);
 	$args = array();
-	if (!count($tokens)) {
-	  return page();
-	}
  	for ($i = 0; $i < count($tokens); $i++) {
  		$function = 'page_'. implode('_', $tokens);
 		if (function_exists($function)) {

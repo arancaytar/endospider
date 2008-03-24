@@ -1,6 +1,6 @@
 <?php
 
-function page() {
+function page_() {
   return page_overview();
 }
 
@@ -30,7 +30,7 @@ function page_overview() {
   foreach ($regions as $region) {
     $out .= "
     <tr>
-      <td>$region[region]</td>
+      <td><a href='". l('region/'. $region['region']) ."'>$region[region]</a></td>
       <td>$region[delegate]</td>
       <td>$region[size]</td>
       <td>$region[un]</td>
