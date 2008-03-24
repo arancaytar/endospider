@@ -1,7 +1,7 @@
 <?php
 
 function form($id) {
-  if (!$form = form_build($id)) return;
+  if (!$form = form_build($id)) return "FORM NOT FOUND";
   if ($_SERVER['HTTP_METHOD'] == 'POST') {
     $input = form_check_input($form, $_POST[]);
     $return = form_execute($id, $input);
