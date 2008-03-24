@@ -52,7 +52,7 @@ function db_read($record, $criteria) {
   $table = DB_PREFIX . $type;
   $sql = "SELECT * FROM `$table` ";
   foreach ($criteria as $attribute => $value) {
-    $c[] = "`$attribute` ". is_array($value) ? " IN ('". implode("', '", $value) ."')" : " = '$value'"; 
+    $c[] = "`$attribute` ". (is_array($value) ? " IN ('". implode("', '", $value) ."')" : " = '$value'"); 
   }
   $sql .= "WHERE ". implode(" AND ", $c);
   $result = db_query($sql);
