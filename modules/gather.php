@@ -13,7 +13,7 @@ function form_gather() {
   );
   $form['submit'] = array(
     '#type' => 'submit',
-    '#title' => t('Index'),
+    '#value' => t('Index'),
   );
   return $form;
 }

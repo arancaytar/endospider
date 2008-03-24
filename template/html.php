@@ -32,6 +32,7 @@ function main_menu($url) {
 
 function template_html($page) {
 	foreach ($page as $var => $val) $$var = $val;
+  $menu = main_menu($_GET['q']);
 	include_once('template/page.tpl.php');
 } 
 ?>
