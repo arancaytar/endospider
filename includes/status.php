@@ -10,8 +10,9 @@ function status($message) {
   if (!$last) $last = $current;
   
   $since_last = $current - $last;
+  $since_begin = $current - $start;
   
-  print "$current\t\t($since_last)\t\t$message\n";
+  print "$since_begin\t\t$message\n";
   flush();
   
   $last = $current;
