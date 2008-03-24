@@ -34,6 +34,7 @@ function form_render($form) {
   $out = '<form method="post" action="' + $_SERVER['REQUEST_URI'] + '">';
   $out .= form_render_($form);
   $out .= '</form>';
+  return $out;
 }
 
 function form_render_($fields, $prefix = array(), $root = '') {
