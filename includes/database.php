@@ -50,9 +50,16 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
   
 }
 
-function db_read($record, $criteria) {
+function db_read($record, $fields, $criteria) {
   $table = DB_PREFIX . $record;
-  $sql = "SELECT * FROM `$table` ";
+  $schema = db_schema($record);
+  foreach ($fields as $i=>$field) {
+    if (!in_array($field, $schema['fields'])) {
+      unset($fields[$i]);
+    }
+  }
+  $fields = implode('`, `', $fields);
+  $sql = "SELECT `$fields` FROM `$table` ";
   foreach ($criteria as $attribute => $value) {
     $c[] = "`$attribute` ". (is_array($value) ? " IN ('". implode("', '", $value) ."')" : " = '$value'"); 
   }
@@ -96,7 +103,11 @@ function db_query($sql) {
 }
 
 function db_fetch_array($res) {
-  return mysql_fetch_array($res);
+  $ar = mysql_fetch_array($res);
+  if (count($ar) == 2) {
+    $ar = $ar[0];
+  }
+  return $ar;
 }
 
 function db_connect_() {

@@ -52,7 +52,7 @@ function gather_index($region) {
 function gather_scan($region) {
   status(t("Beginning scan of $region, stage 2 of 2..."));
   status(t("Retrieving UN nations from database..."));
-  $nations = db_read('nation', array('region' => $region));
+  $nations = db_read('nation', array('nation'), array('region' => $region));
   
   status(t("There are ". count($nations) . " UN nations in this region..."));
   status(t('Launching deep scan.'));
