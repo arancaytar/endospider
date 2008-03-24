@@ -22,6 +22,12 @@
 }
 
 function main_menu($url) {
+  $menu = array('' => t('Overview'), 'gather' => t('Gather data'));
+  $out = '<ul>';
+  foreach ($menu as $link => $text) {
+    $out .= '<li><a href="'. l($link) .'">'. $text .'</a></li>';
+  }
+  $out .= '</ul>';
 }
 
 function template_html($page) {
