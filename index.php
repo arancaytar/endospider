@@ -16,6 +16,8 @@ require_once "modules/auth.php";
 require_once "modules/error.php";
 require_once "modules/gather.php";
 
+require_once "template/html.php";
+
 function main() {
   ob_start('ob_gzhandler');
   $page = alias_execute($_GET['q']);
