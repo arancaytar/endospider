@@ -1,0 +1,4 @@
+Satisfy any
+Allow from All
+  RewriteEngine on
+  RewriteRule ^png/region/(.*) region_image.php/$1

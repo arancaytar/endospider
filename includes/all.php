@@ -1,0 +1,12 @@
+<?php
+require_once("dbconnect.php");
+require_once("delete.php");
+require_once("error.php");
+require_once("string.php");
+require_once("auth.php");
+require_once("behavior.php");
+require_once("status.php");
+require_once("curl.php");
+require_once("alias.php");
+//error_reporting(0);
+?>
