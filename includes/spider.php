@@ -8,7 +8,7 @@ function spider_region_meta($region_name) {
   preg_match('/contains ([0-9,]*) nations. <span style="font-size: 8pt;">/', $response->data, $match);
   $number = str_replace(",", "", $match[1]);
   if (!$delegate || !$number) return false; 
-  return array('delegate' => $delegate, 'nations' => $number);
+  return array('delegate' => $delegate, 'size' => $number, 'scan_started' => date('Y-m-d H:i:s'));
 }
 
 function spider_region_un($region_name, $start) {

@@ -33,7 +33,7 @@ function gather_index($region) {
   } while (!$meta);
   
   status(t('There are @n nations in region; @del is delegate.',
-    array('@n' => $meta['nations'], '@del' => $meta['delegate'])));
+    array('@n' => $meta['size'], '@del' => $meta['delegate'])));
   status(t('Writing meta info to database...'));
   db_write('region', $region, $meta);
   status(t('Now indexing UN nations in region...'));
