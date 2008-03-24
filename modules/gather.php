@@ -73,4 +73,5 @@ function gather_scan($region) {
     }
   }
   status(t('Done with scan.'));
+  exit;
 }
