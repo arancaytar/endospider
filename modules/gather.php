@@ -40,8 +40,10 @@ function gather_index($region) {
   for ($i = 0; $i < $meta['nations']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
     $nations = spider_region_un($region, $i);
-    status(t('    Found !un UN nations:', array('!un' => count($nations))) . implode(', ', $nations));
-    status(t('    Writing nations to database...'));
+    if (count($nations)) {
+      status(t('    Found !un UN nations: ', array('!un' => count($nations))) . implode(', ', $nations));
+      status(t('    Writing nations to database...'));      
+    }
     db_write('nation', $nations, array('region' => $region), DB_REPLACE);
   }
   status(t('Done with indexing.'));

@@ -14,6 +14,7 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
     case DB_REPLACE:
     case DB_INSERT:
       $sql = "$action INTO `$table` (`". implode("`, `", $schema['fields']) ."`) VALUES ";
+      $records = array();
       foreach ($key as $id) {
         $record = is_array($schema['key']) ? $id + $attributes : array($schema['key'] => $id) + $attributes;
         foreach ($schema['fields'] as $field) {
