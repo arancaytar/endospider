@@ -8,6 +8,7 @@ require_once "includes/auth.php";
 require_once "includes/database.php";
 require_once "includes/form.php";
 require_once "includes/http.php";
+require_once "includes/locale.php";
 require_once "includes/spider.php";
 require_once "includes/status.php";
 
