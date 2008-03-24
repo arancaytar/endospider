@@ -65,14 +65,14 @@ function db_schema($record = NULL) {
   static $schema = array(
     'nation' => array(
       'fields' => array(
-        'nation', 'region'
+        'nation', 'region', 'received', 'indexed', 'scanned',
       ),
       'key' => 'nation',
     ),
     
     'region' => array(
       'fields' => array(
-        'region', 'size', 'delegate' 
+        'region', 'size', 'delegate', 'scan_started', 'scan_ended',
       ),
       'key' => 'region',
     ),
