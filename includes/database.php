@@ -86,3 +86,15 @@ function db_schema($record = NULL) {
   
   return $record ? $schema[$record] : array_keys($schema);
 } 
+
+function db_query($sql) {
+  static $link;
+  if (!$link) $link = db_connect_();
+  mysql_query($sql);
+}
+
+function db_connect_() {
+  $link = @mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS);
+  @mysql_select_db(MYSQL_DATABASE);
+  return $link;
+}
