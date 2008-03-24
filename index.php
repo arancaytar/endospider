@@ -19,7 +19,6 @@ require_once "modules/gather.php";
 require_once "template/html.php";
 
 function main() {
-  ob_start('ob_gzhandler');
   $page = alias_execute($_GET['q']);
   if (!is_object($page)) $page = (object)(array('content' => $page));
   if (!$page->content_type) $page->content_type = 'application/xhtml+xml';
@@ -30,7 +29,6 @@ function main() {
     $function = 'template_'. $page->template;
     print $function($page);
   } else print $page->content;
-  ob_end_flush();
 }
 
 main();
