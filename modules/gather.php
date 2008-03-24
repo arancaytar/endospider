@@ -39,7 +39,10 @@ function gather_index($region) {
   status(t('Now indexing UN nations in region...'));
   for ($i = 0; $i < $meta['size']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
-    $nations = spider_region_un($region, $i);
+    do {
+      if (!$nations = spider_region_un($region, $i)) status(t('ERROR, Redialing...'));
+    } while (!$nations);
+    
     if (count($nations)) {
       status(t('    Found !un UN nations: ', array('!un' => count($nations))) . implode(', ', $nations));
       status(t('    Writing nations to database...'));      
@@ -58,7 +61,10 @@ function gather_scan($region) {
   status(t('Launching deep scan.'));
   foreach ($nations as $nation) {
     status(t('  Downloading spotlight page of '. $nation));
-    $nation_data = spider_nation($nation);
+    do {
+      if (!$nation_data = spider_nation($nation)) status(t('ERROR, Redialing...'));
+    } while (!$nation_data);
+    
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
       db_write('nation', $nation, $nation_data['endorsements'], DB_UPDATE);
