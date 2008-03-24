@@ -36,7 +36,7 @@ function spider_nation($nation_name) {
   $nation['region'] = $match[1];
   preg_match('/Endorsements Received: ([0-9]*) \((.*?)\)/', $response->data, $match);
   spider_nation_stack_();
-  preg_replace('/"nation=([a-z0-9_\-]*)"/', 'spider_nation_stack_("$1")', $match[2]);
+  $out = preg_replace('/"nation=([a-z0-9_\-]*)"/e', 'spider_nation_stack_("$1")', $match[2]);
   $nation['endorsements'] = spider_nation_stack_();
   if (count($nation['endorsements']) != $match[1]) {
     status(t('This page failed a sanity check - @a nations are not @b.', 
