@@ -37,7 +37,7 @@ function gather_index($region) {
   status(t('Writing meta info to database...'));
   db_write('region', $region, $meta);
   status(t('Now indexing UN nations in region...'));
-  for ($i = 0; $i < $meta['nations']; $i += 15) {
+  for ($i = 0; $i < $meta['size']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
     $nations = spider_region_un($region, $i);
     if (count($nations)) {

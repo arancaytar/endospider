@@ -50,7 +50,7 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
 }
 
 function db_read($record, $criteria) {
-  $table = DB_PREFIX . $type;
+  $table = DB_PREFIX . $record;
   $sql = "SELECT * FROM `$table` ";
   foreach ($criteria as $attribute => $value) {
     $c[] = "`$attribute` ". (is_array($value) ? " IN ('". implode("', '", $value) ."')" : " = '$value'"); 
