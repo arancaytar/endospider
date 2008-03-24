@@ -1,5 +1,22 @@
 <?php
 
+function status($message) {
+  static $start = 0;
+  static $last = 0;
+  $current = explode(' ', microtime());
+  $current = $current[0] + $current[1];
+  
+  if (!$start) $start = $current;
+  if (!$last) $last = $current;
+  
+  $since_last = $current - $last;
+  
+  print "$current\t\t($since_last)\t\t$message\n";
+  flush();
+  
+  $last = $current;
+}
+
 function get_region_status($region) {
 	global $prefix;
 	$sql="select scan_ended,count(*) as un_nations,sum(b.updated is not null) as un_scanned,

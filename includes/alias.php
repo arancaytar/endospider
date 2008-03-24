@@ -12,7 +12,7 @@
  define('CONTENT_RSS', 'application/rss+xml');
  define('CONTENT_RDF', 'application/rdf+xml');
  
-function execute_active_handler($path) {
+function alias_execute($path) {
  	$tokens = explode("/", $path);
 	$args = array();
 	
@@ -24,15 +24,4 @@ function execute_active_handler($path) {
 		array_unshift($args, array_pop($tokens));
  	}
 	return page_error_404($path);
-}
-
-function main() {
-	ob_start('ob_gzhandler');
- 	$page = execute_active_handler($_GET['q']);
-	send_content_type($page->content_type);
-	if (!empty($page->template)) {
-		$function = 'template_'. $page->template;
-		print $function($page);
-	} else print $page->content;
-	ob_end();
 }
