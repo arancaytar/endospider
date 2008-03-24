@@ -15,7 +15,7 @@ function spider_region_un($region_name, $start) {
   $response = http("http://www.nationstates.net/page=list_nations/region=$region_name/nation=/start=$start");
   if (!preg_match('/Find a nation: <input/', $response->data)) return false;
   spider_nation_stack_();
-  preg_replace('/href="nation=([^"]*)".*<img src="\/images\/un\.gif" hspace="6" alt="UN Member"/e', 'spider_un_callback_("$1")', $response->data);
+  preg_replace('/href="nation=([^"]*)".*<img src="\/images\/un\.gif" hspace="6" alt="UN Member"/e', 'spider_nation_stack_("$1")', $response->data);
   return spider_nation_stack_();
 }
 
