@@ -1,0 +1,119 @@
+html,
+body {
+	background:#174389;
+	color:#fff;
+	margin:0px 0px 0px 0px;
+	padding:10px 10px 10px 10px;
+	height:90%;
+	font-family:sans-serif;
+}
+
+table {
+	border:1px solid #3783c9;
+	background-color:#021540;
+}
+
+th,td {
+	border:1px solid white;
+	padding:3px;
+}
+
+th {
+	padding:10px;
+}
+
+a {
+	color:#ff0;
+	text-decoration:underline;
+}
+a:hover {
+	color:#0ff;
+	text-decoration:underline;
+}
+a:visited {
+	color:#aa0;
+	text-decoration:underline;
+}
+.content-box {
+	border-width:1px;
+	border-style:solid;
+	border-color:#3783c9;
+}
+.filled-box {
+	border-width:1px;
+	border-style:solid;
+	border-color:#3783c9;
+	background:#021540;
+	padding:10px;
+	margin-bottom:20px;
+}
+#title {
+	padding-left:30px;
+	/* title banner*/
+}
+#navside {
+	width:15%;
+	margin-right:20px;
+	white-space:nowrap;
+	float:left;
+	font-family:serif;
+}
+#navside h2, h2.navside {
+	font-size:12pt;
+	text-align:center;
+	font-variant:small-caps;
+}
+#nav-top {
+	width:50%;
+}
+
+#main {
+  min-height:200px;
+}
+#main2 {
+	margin-left:20%;
+	margin-bottom:20px;
+	width:70%;
+	padding:10px 10px 10px 10px;
+	/*border-width:1px;
+	border-style:solid;
+	border-color:white;*/
+}
+
+.filler {
+	height:100%;
+}
+#footer {
+  margin-bottom:4px;
+}
+a.external, a[rel=external], a[href^="http:"] {
+	background: url(/images/external.png) center right no-repeat;
+	padding-right: 13px;
+}
+a.mail, a[href^="mailto:"]
+{
+	background: url(/images/mail.png) center right no-repeat;
+	padding-right: 20px;
+}
+
+dt {
+  font-weight:bold;
+  font-style:italic;
+}
+
+#copyright
+{
+  margin-top:2px;
+  font-size:11pt;
+}
+
+div#messages ul {
+  padding:5px;
+  background-color:#fdd;
+  color:red;
+  border:1px solid red;
+}
+
+label {
+  padding-right:3px;
+}

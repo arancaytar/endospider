@@ -1,0 +1,28 @@
+a:after
+{
+  content:" [http://ermarian.net/"attr(href)"] ";
+}
+
+a.external:after
+{
+  content:" ["attr(href)"] ";
+}
+
+a.mail:after
+{
+  content: " <"attr(title)">";
+}
+
+#footer
+{
+  display:none;
+}
+
+#copyright
+{
+  display:block;
+  font-style:italic;
+  border-top:1px solid black;
+  padding-top:5px;
+  margin-top:10px;
+}
