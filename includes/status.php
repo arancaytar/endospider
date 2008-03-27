@@ -85,14 +85,14 @@ function get_region($region) {
 						count(*) as endorsements, 0 as endorsed_delegate
 				 from (".$prefix."endorsements a join ".$prefix."nations b on a.endorsee=b.nation and region='$region')
 				 where region='$region'	 group by a.endorsee";
-		mysql_query($sql);
+		db_query($sql);
 		if ($debug) echo $sql.mysql_error();
 		$sql = "update ".$prefix."temp_endorsees a join ".$prefix."endorsements b
 					on a.nation=b.endorser and b.endorsee='$delegate' set endorsed_delegate=1";
-		mysql_query($sql);
+		db_query($sql);
 		if ($debug) echo $sql.mysql_error();
 		$sql = "select * from ".$prefix."temp_endorsees order by endorsements desc limit 0,20;";
-		$res = mysql_query($sql);
+		$res = db_query($sql);
 		if ($debug) echo $sql.mysql_error();
 		while ($row=mysql_fetch_array($res)) $rows[]=$row;
 		return $rows;
