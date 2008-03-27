@@ -21,6 +21,9 @@ function form_gather() {
 function form_gather_submit($values) {
   header('Content-type: text/plain');
   $region = $values['region'];
+  db_query('DELETE FROM {region} WHERE region="%s"', $region);
+  db_query('DELETE FROM {nation} WHERE region="%s"', $region);
+  db_query('DELETE FROM {endorsement} WHERE region="%s"', $region);
   gather_index($region);
   gather_scan($region);
 }
@@ -37,37 +40,43 @@ function gather_index($region) {
   status(t('Writing meta info to database...'));
   db_write('region', $region, $meta, DB_REPLACE);
   status(t('Now indexing UN nations in region...'));
+  $un = 0;
   for ($i = 0; $i < $meta['size']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
     do {
-      if (!$nations = spider_region_un($region, $i)) status(t('ERROR, Redialing...'));
-    } while (!$nations);
-    
+      $nations = spider_region_un($region, $i);
+      if (!is_array($nations)) status(t('ERROR, Redialing...'));
+    } while (!is_array($nations));
+    $un += count($nations);
+    $requests++;
+    $running = status(t('  Downloaded.'));
     if (count($nations)) {
       status(t('    Found !un UN nations: ', array('!un' => count($nations))) . implode(', ', $nations));
-      status(t('    Writing nations to database...'));      
+      status(t('    Writing nations to database...'));
+      db_write('nation', $nations, array('region' => $region), DB_REPLACE);
     }
-    db_write('nation', $nations, array('region' => $region), DB_REPLACE);
+    status(t('    Projected time remaining: '. gather_time_remaining_1($meta['size'], $i, $un, $running / $requests)));
   }
   status(t('Done with indexing.'));
 }
 
 function gather_scan($region) {
-  status(t("Beginning scan of $region, stage 2 of 2..."));
+  $start = status(t("Beginning scan of $region, stage 2 of 2..."));
   status(t("Retrieving UN nations from database..."));
   $nations = db_read('nation', array('nation'), array('region' => $region));
-  
+  $requests = 0;
   status(t("There are ". count($nations) . " UN nations in this region..."));
   status(t('Launching deep scan.'));
-  foreach ($nations as $nation) {
+  foreach ($nations as $i => $nation) {
     status(t('  Downloading spotlight page of '. $nation));
     do {
       if (!$nation_data = spider_nation($nation)) status(t('ERROR, Redialing...'));
+      $requests++;
     } while (!$nation_data);
     
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
-      db_write('nation', $nation, $nation_data['endorsements'], DB_UPDATE);
+      db_write('nation', $nation, array('received' => count($nation_data['endorsements'])), DB_UPDATE);
       $endorsements = array();
       foreach ($nation_data['endorsements'] as $giver) {
         $endorsements[] = array('giving' => $giver, 'receiving' => $nation);
@@ -77,7 +86,27 @@ function gather_scan($region) {
       status('    Nation has left region, deleting from database...');
       db_write('nation', $nation, NULL, DB_DELETE);
     }
+    $running = status('    Done with nation.') - $start;
+    status(t('    Projected time remaining: '. gather_time_remaining_2(count($nations), $i, $running / $requests)));
   }
   status(t('Done with scan.'));
   exit;
 }
+
+function gather_time_remaining_1($size, $progress, $un, $avg) {
+  print "$un nations in $progress out of $size : ";
+  $un = $un / $progress * $size;
+  print "$un projected. ";
+  print "$avg time per request * ". (($size - $progress)/15) ." requests to go: "; 
+  $time = $avg * ($size - $progress) / 15;
+  print "$time for indexing. ";
+  $time += $un * $avg;
+  print "$un * $avg for scanning.";
+  return $time;
+}
+
+function gather_time_remaining_2($un, $progress, $avg) {
+  $time = ($un - $progress) * $avg;
+  return $time;
+}
+
