@@ -91,7 +91,7 @@ function gather_scan($region) {
   }
   
   status(t('Saving the given counts.'));
-  db_query('CREATE TEMPORARY TABLE ngiven SELECT nation, COUNT(*) AS outgoing {nation} n JOIN {endorsement} e ON nation = giving GROUP BY nation');
+  db_query('CREATE TEMPORARY TABLE ngiven SELECT giving AS nation, COUNT(*) AS outgoing FROM {endorsement} e GROUP BY nation');
   db_query('UPDATE {nation} NATURAL JOIN {ngiven} SET given = outgoing');
   status(t('Done with scan.'));
   exit;
