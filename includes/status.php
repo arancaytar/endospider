@@ -1,5 +1,19 @@
 <?php
 
+function message($message = NULL) {
+  static $messages = array();
+  if (!$messages && $_COOKIE['endospider_messages']) $messages = explode("\n\n", $_COOKIE['endospider_messages']);
+  if ($message) {
+    $messages[] = $message;
+  }
+  else {
+    $return = $messages;
+    $messages = array();
+  }
+  if (!headers_sent()) setcookie('endospider_messages', implode('\n\n', $messages));
+  return $return;
+}
+
 function status($message) {
   static $start = 0;
   static $last = 0;
@@ -16,6 +30,7 @@ function status($message) {
   flush();
   
   $last = $current;
+  return $since_begin;
 }
 
 function get_region_status($region) {
@@ -105,4 +120,3 @@ function get_region($region) {
 		}
 		return $rows;
 	}
-?>
