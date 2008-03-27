@@ -76,7 +76,7 @@ function gather_scan($region) {
     
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
-      db_write('nation', $nation, array('received' => count($nation_data['endorsements'])), DB_UPDATE);
+      db_write('nation', $nation, array('received' => count($nation_data['endorsements']), 'active' => $nation_data['active']), DB_UPDATE);
       $endorsements = array();
       foreach ($nation_data['endorsements'] as $giver) {
         $endorsements[] = array('giving' => $giver, 'receiving' => $nation);
@@ -89,6 +89,10 @@ function gather_scan($region) {
     $running = status('    Done with nation.') - $start;
     status(t('    Projected time remaining: '. gather_time_remaining_2(count($nations), $i, $running / $requests)));
   }
+  
+  status(t('Saving the given counts.'));
+  db_query('CREATE TEMPORARY TABLE ngiven SELECT nation, COUNT(*) AS out {nation} n JOIN {endorsement} e ON nation = giving GROUP BY nation');
+  db_query('UPDATE {nation} NATURAL JOIN {ngiven} SET given = out');
   status(t('Done with scan.'));
   exit;
 }

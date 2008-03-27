@@ -34,6 +34,19 @@ function spider_nation($nation_name) {
   if (!preg_match('/src="\/images\/smalleyelogo\.jpg"/', $response->data)) return false;
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   $nation['region'] = $match[1];
+  preg_match('/<strong>Most Recent Government Activity:<\/strong> ([0-9]+) (day|hour|minute)s? ago/', $response->data, $match);
+  if ($match[0]) {
+    $nation['active'] = $match[1];
+    switch ($match[2]) {
+      case 'day':
+        $nation['active'] *= 24;
+      case 'hour':
+        $nation['active'] *= 60;
+      case 'minute':
+        $nation['active'] *= 60;
+    }
+  }
+  else $nation['active'] = 0;
   preg_match('/Endorsements Received: ([0-9]*) \((.*?)\)/', $response->data, $match);
   spider_nation_stack_();
   $out = preg_replace('/"nation=([a-z0-9_\-]*)"/e', 'spider_nation_stack_("$1")', $match[2]);
