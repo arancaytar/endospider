@@ -11,7 +11,9 @@ function page_tart_new($nation) {
   $endorsed = db_read('endorsement', array('receiving'), array('giving' => $nation));
   $endorsing = db_read('endorsement', array('giving'), array('receiving' => $nation));
   
-  $not_endorsed = array_diff($all_nations, $endorsed, $endorsing);
+  $not_endorsed = array_diff($all_nations, $endorsed);
+  $not_endorsing = array_diff($all_nations, $endorsing);
+  $not_endorsed = array_intersect($not_endorsed, $not_endorsing);
   
   foreach ($not_endorsed as $candidate) {
     $my_received = db_read('endorsement', array('giving'), array('receiving' => $candidate));
