@@ -98,14 +98,14 @@ function gather_scan($region) {
 }
 
 function gather_time_remaining_1($size, $progress, $un, $avg) {
-  print "$un nations in $progress out of $size : ";
+  //print "$un nations in $progress out of $size : ";
   $un = $un / $progress * $size;
-  print "$un projected. ";
-  print "$avg time per request * ". (($size - $progress)/15) ." requests to go: "; 
+  //print "$un projected. ";
+  //print "$avg time per request * ". (($size - $progress)/15) ." requests to go: "; 
   $time = $avg * ($size - $progress) / 15;
-  print "$time for indexing. ";
+  //print "$time for indexing. ";
   $time += $un * $avg;
-  print "$un * $avg for scanning.";
+  //print "$un * $avg for scanning.";
   return $time;
 }
 

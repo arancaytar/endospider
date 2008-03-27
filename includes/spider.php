@@ -35,8 +35,7 @@ function spider_nation($nation_name) {
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   $nation['region'] = $match[1];
   
-  if (preg_match('/<p style="font-size:8pt"><strong>Most Recent Government Activity:<\/strong>
-        ([0-9]+) (day|hour|minute)s? ago<\/p>/', $response->data, $match)) {
+  if (preg_match('/<p style="font-size:8pt"><strong>Most Recent Government Activity:<\/strong>[^0-9a-z]*([0-9]+) (day|hour|minute)s? ago<\/p>/', $response->data, $match)) {
     $nation['active'] = $match[1];
     switch ($match[2]) {
       case 'day':
