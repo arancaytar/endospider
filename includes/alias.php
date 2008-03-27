@@ -15,10 +15,13 @@
 function alias_execute($path) {
  	$tokens = explode("/", $path);
 	$args = array();
- 	for ($i = 0; $i < count($tokens); $i++) {
+	if ($tokens[0] == '') {
+	  return page_();
+	}
+ 	while (count($tokens)) {
  		$function = 'page_'. implode('_', $tokens);
-		if (function_exists($function)) {
-			return $function($args);
+  	if (function_exists($function)) {
+			return call_user_func_array($function, $args);
 		}
 		array_unshift($args, array_pop($tokens));
  	}
