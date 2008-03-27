@@ -14,7 +14,13 @@ function t($text, $placeholders = array()) {
   return str_replace(array_keys($placeholders), $placeholders, $text);
 }
 
-function l($path = "") {
+function l($path = "", $anchor = "") {
+  $url = url($path);
+  if (!$anchor) return $url;
+  return '<a href="'. $url .'">'. $anchor .'</a>';
+}
+
+function url($path) {
   static $url = "";
   if (!$url) $url = dirname($_SERVER['PHP_SELF']);
   return "$url/$path";
