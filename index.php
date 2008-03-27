@@ -31,10 +31,12 @@ function main() {
   if (!$page->code) $page->code = 200;
   if (!$page->template) $page->template = 'html';
   header("Content-type: ". $page->content_type, $page->code);
+  ob_start('ob_gzhandler');
   if (!empty($page->template)) {
     $function = 'template_'. $page->template;
     print $function($page);
   } else print $page->content;
+  ob_end_flush();
 }
 
 main();
