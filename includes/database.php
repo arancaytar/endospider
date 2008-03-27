@@ -19,7 +19,7 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
         $record = is_array($schema['key']) ? $id + $attributes : array($schema['key'] => $id) + $attributes;
         $cols = array();
         foreach ($schema['fields'] as $field) {
-          $cols[] = "'". $record[$field] ."'";
+          $cols[] = "'". db_string($record[$field]) ."'";
         }
         $records[] = "(". implode(", ", $cols) .")";
       }
@@ -28,21 +28,23 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
     case DB_UPDATE:
       $sql = "UPDATE `$table` ";
       foreach ($attributes as $col => $value) {
-        $update[] = "`$col` = '$value'";
+        if (in_array($col, $schema['fields'])) $update[] = "`$col` = '$value'";
       }
       $sql .= 'SET '. implode(", ", $update);
       if (is_array($schema['key'])) {
         $schema['key'] = 'CONCAT(`'. implode("`,'-',`", $schema['key']) .'`)';
-        foreach($key as $i=>$id) $key = implode("-", $id);
+        foreach($key as &$id) $id = implode("-", $id);
       }
-      $sql .= 'WHERE '. $schema['key'] ." IN ('". implode("', '", $key) ."')";
+      foreach ($key as &$id) $id = db_string($id);
+      $sql .= ' WHERE '. $schema['key'] ." IN ('". implode("', '", $key) ."')";
       break;
     case DB_DELETE:
       $sql = "DELETE FROM `$table` ";
       if (is_array($schema['key'])) {
         $schema['key'] = 'CONCAT(`'. implode("`,'-',`", $schema['key']) .'`)';
-        foreach($key as $i=>$id) $key = implode("-", $id);
+        foreach($key as &$id) $id = implode("-", $id);
       }
+      foreach ($key as &$id) $id = db_string($id);
       $sql .= 'WHERE '. $schema['key'] ." IN ('". implode("', '", $key) ."')";
       break;
   }
@@ -51,17 +53,23 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
 }
 
 function db_read($record, $fields, $criteria) {
+  if (!$schema = db_schema($record)) return;
   $table = DB_PREFIX . $record;
-  $schema = db_schema($record);
   foreach ($fields as $i=>$field) {
     if (!in_array($field, $schema['fields'])) {
       unset($fields[$i]);
     }
   }
+  foreach ($criteria as $i=>$field) {
+    if (!in_array($i, $schema['fields'])) {
+      unset($criteria[$i]);
+    }
+  }
   $fields = implode('`, `', $fields);
   $sql = "SELECT `$fields` FROM `$table` ";
   foreach ($criteria as $attribute => $value) {
-    $c[] = "`$attribute` ". (is_array($value) ? " IN ('". implode("', '", $value) ."')" : " = '$value'"); 
+    if (is_array($value)) foreach ($value as &$v) $v = db_string($v);
+    $c[] = "`$attribute` ". (is_array($value) ? " IN ('". implode("', '", $value) ."')" : " = '". db_string($value) ."'"); 
   }
   $sql .= "WHERE ". implode(" AND ", $c);
   $result = db_query($sql);
@@ -96,8 +104,16 @@ function db_schema($record = NULL) {
   return $record ? $schema[$record] : array_keys($schema);
 } 
 
-function db_query($sql) {
+function db_query($sql, $args = array()) {
   static $link;
+  if (is_array($args)) {
+    array_unshift($args, $sql);
+  } else $args = func_get_args();
+  //var_dump($sql);
+  $sql = call_user_func_array('sprintf', $args);
+  //var_dump($sql);
+  $sql = preg_replace('/{([a-z]+)}/e', 'db_prefix("$1")', $sql);
+  //var_dump($sql);
   if (!$link) $link = db_connect_();
   return mysql_query($sql);
 }
@@ -114,4 +130,12 @@ function db_connect_() {
   $link = @mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS);
   @mysql_select_db(MYSQL_DATABASE);
   return $link;
+}
+
+function db_string($string) {
+  return str_replace(array('\\', '\''), array('\\\\', '\\\''), $string); 
+}
+
+function db_prefix($string) {
+  if (db_schema($string)) return '`'. DB_PREFIX . $string .'`';
 }
