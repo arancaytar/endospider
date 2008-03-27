@@ -34,6 +34,25 @@ function main_menu($url) {
 function template_html($page) {
 	foreach ($page as $var => $val) $$var = $val;
   $menu = main_menu($_GET['q']);
+  $messages = message();
 	include_once('template/page.tpl.php');
 } 
+
+
+function html_table($header, $rows) {
+  $out = '<table>';
+  $out .= '<thead><tr><th>'. implode('</th><th>', $header) .'</th></tr></thead>';
+  $out .= '<tbody>';
+  
+  foreach ($rows as $row) {
+    $out .= '<tr>';
+    foreach ($header as $key => $title) {
+      $out .= '<td>'. $row[$key] .'</td>';
+    }
+    $out .= '</tr>';
+  }
+  $out .= '</tbody>';
+  $out .= '</table>';
+  return $out;
+}
 ?>

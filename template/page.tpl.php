@@ -7,22 +7,27 @@
  
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <!-- related documents -->
-<?php
-if ($base) {
-?>
-<base href="<?=$base?>" />
-<?php
-}
-?>
+<base href="http://<?=$_SERVER['HTTP_HOST'] . l()?>" />
 <link rel="start" href="<?=$start?>" />
 <?php if ($prev) { ?><link rel="prev"  href="<?=$prev?>" /> <?php } ?>
 <?php if ($next) { ?><link rel="next"  href="<?=$next?>" /> <?php } ?>
 <link rel="contents" href="." />
 <link rel="help" href="help" />
+
+<!-- stylesheets -->
+<link rel="stylesheet" 
+      type="text/css" 
+      media="all" 
+      href="style/default.css" />
 <link rel="stylesheet" 
       type="text/css" 
       media="screen" 
-      href="style/default.css" />
+      href="style/screen.css" />
+<link rel="stylesheet" 
+      type="text/css" 
+      media="print" 
+      href="style/print.css" />
+      
 </head>
 
 <body>
@@ -42,9 +47,16 @@ if ($base) {
 	<?php
 	}
 	?>
-	<div class="main">
-		<div class="main2">
+	<div id="main">
+		<div id="main2">
 			<h2><?=$title?></h2>
+      <div id="messages">
+      <?php 
+      if (count($messages)) {
+        print '<ul><li class="message">'. implode('</li><li class="message">', $messages) .'</li></ul>';
+      }
+      ?>
+      </div>
 			<?=$content?>			
 		</div>
 	</div>
