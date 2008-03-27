@@ -1,109 +1,49 @@
 <?php
-include("config.php");
-include("includes/all.php");
-$link=@dbconnect();
 
-foreach ($_GET as $name=>$value) $$name=$value;
-$region_db=display_to_url($region);
-$region=url_to_display($region);
-$endorsees=@get_top_endorsees($region_db);
-$endorsers=@get_top_endorsers($region_db);
+function page_region($region) {
+  $page->title = t('Region: @region', array('@region' => $region));
+  $r = db_read('region', array('size', 'delegate'), array('region' => $region));
+  
+  $un = db_fetch_array(db_query('SELECT COUNT(*) FROM {nation} WHERE `region` = "%s"', $region));
+  $endo = db_fetch_array(db_query('SELECT COUNT(*) FROM {endorsement} WHERE `region` = "%s"', $region));
+  $delegate = db_read('nation', array('received'), array('nation' => $r['delegate']));
+  $vice = db_fetch_array(db_query('SELECT `received` FROM {nation} WHERE `region` = "%s" ORDER BY `received` DESC LIMIT 1,1', $region));
+  
+  $page->content =  '<p>'. t('This region contains %size nations and is ruled by UN delegate %delegate', array('%size' => $r['size'], '%delegate' => $r['delegate'])) .'</p>';
+  
+  $page->content .= t('
+<h3>Statistical overview</h3>
+<ul>
+  <li><strong>UN Activity</strong>: %un% UN membership</li>
+  <li><strong>Endorsement saturation</strong>: %endo% of possible endorsements exchanged</li>
+  <li><strong>Invasion security</strong>: %security% of nations endorse delegate</li>
+  <li><strong>Delegate power</strong>: %power% difference to delegate-in-waiting</li>
+</ul>', array(
+    '%un' => sprintf('%.2f', 100 * $un / $r['size']),
+    '%endo' => sprintf('%.2f', 100 * $endo / $un / ($un - 1)),
+    '%security' => sprintf('%.2f', 100 * $delegate / $un),
+    '%power' => sprintf('%.2f', 100 * ($delegate - $vice) / $delegate),
+  ));
+  
+  $res = db_query('SELECT `nation`, `received`, COUNT(*) AS `given` FROM {nation} `n` JOIN {endorsement} `e` ON `nation` = `giving` 
+                    WHERE `n`.`region` = "%s" GROUP BY `nation` ORDER BY `received` DESC LIMIT 0, 20', $region);
+  
+  $header = array('nation' => t('Nation'), 'received' => t('Received'), 'given' => t('Given'));
+  
+  while ($row = db_fetch_array($res)) {
+    $row['nation'] = l('nation/'. $row['nation'], $row['nation']);
+    $received[] = $row;
+  }
+  
+  $res = db_query('SELECT `nation`, `received`, COUNT(*) AS `given` FROM {nation} `n` JOIN {endorsement} `e` ON `nation` = `giving` 
+                    WHERE `n`.`region` = "%s" GROUP BY `nation` ORDER BY `given` DESC LIMIT 0, 20', $region);
 
-?>
-<?php template_head("Showing Region: $region"); ?>
-<h1>Regional Details</h1>
-<p><a href="gather.php">Gather data</a> (log-in required)</p>
-<p><a href=".">Index</a> -&gt; <strong><?=($region)?$region:'Select Region'?></strong></p>
-<form action='' method='get'>
-<p>
-	<label>Region: </label><input type='text' name='region' value='<?=$region?>'/>
-	<input type='submit' value='display'/></p>
-</form>
-<hr/>
-<?php
-if ($region) { 
-?>
-<h2><?=$region?></h2>
-
-<p>Note: This data is not real-time, but as of the last manual update!</p>
-<h3>Top 20 endorsed nations:</h3>
-<p>
-(<a href="ranking.php?region=<?=$region_db?>&amp;sort=received&amp;desc=desc">View in detail</a>)
-</p>
-<table border="1">
-	<tr>
-		<th>#</th>
-		<th>Nation name</th>
-		<th>Endorsements received</th>
-	</tr>
-<?php 
-if ($endorsees) 
-foreach($endorsees as $i=>$endorsee) {
-	foreach ($endorsee as $name=>$value) $$name=$value;
-?>
-	<tr>
-		<td><?=$i+1?></td>
-		<td>
-			<a title="View on Nationstates" href="http://www.nationstates.net/page=display_nation/nation=<?=$nation?>">
-				<?=url_to_display($nation)?>
-			</a>
-		</td>
-		<td>
-			<a title="View all endorsers" href="received.php?nation=<?=$nation?>"><?=$endorsements?></a>
-		</td>
-	</tr>
-<?php
-	foreach ($endorsee as $name=>$value) $$name='';
+  while ($row = db_fetch_array($res)) {
+    $row['nation'] = l('nation/'. $row['nation'], $row['nation']);
+    $given[] = $row;
+  }
+  
+  $page->content .= '<h3>Top twenty powers</h3>'. html_table($header, $received);
+  $page->content .= '<h3>Top twenty tarters</h3>'. html_table($header, $given);
+  return $page;
 }
-else { 
-?>
-	<tr><td colspan="3" align="center"><em>No data</em></td></tr>
-<?php
-}
-?>
-</table>
-
-<h3>Top 20 endorsing nations:</h3>
-<p>
-(<a href="ranking.php?region=<?=$region_db?>&amp;sort=given&amp;desc=desc">View in detail</a>)
-</p>
-<table border="1">
-	<tr>
-		<th>#</th>
-		<th>Nation name</th>
-		<th>Endorsements given</th>
-	</tr>
-<?php
-if ($endorsers)
-foreach($endorsers as $i=>$endorser) {
-	foreach ($endorser as $name=>$value) $$name=$value;
-?>
-	<tr>
-		<td><?=$i+1?></td>
-		<td>
-			<a title="View on Nationstates" href="http://www.nationstates.net/page=display_nation/nation=<?=$nation?>">
-				<?=url_to_display($nation)?>
-			</a>
-		</td>
-		<td>
-			<a title="View all endorsees" href="given.php?nation=<?=$nation?>"><?=$endorsements?></a>
-		</td>
-	</tr>
-<?php
-	foreach ($endorser as $name=>$value) $$name='';
-}
-else { 
-?>
-	<tr><td colspan="3" align="center"><em>No data</em></td></tr>
-<?php
-}?>
-</table>
-<?php
-} else {
-?>
-<p>Please enter a region name or select one from <a href=".">the region list</a>.</p>
-<?php
-}
-
-template_foot();
-?>
