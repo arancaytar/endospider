@@ -5,7 +5,7 @@ function page_ranking($sort, $region, $r = FALSE) {
   $order = $orders[$sort] .= (!empty($r) == ($sort!='name')) ? ' ASC' : ' DESC';
   $result = db_query('SELECT nation, given, received FROM {nation} WHERE region="%s" ORDER BY '. $order, $region);
   while ($row = db_fetch_array($result)) {
-    $row['nation'] = n($row['nation']);
+    $row['nation'] = l('nation/'. $row['nation'], n($row['nation']));
     $rows[] = $row;
   }
   $header = array(
