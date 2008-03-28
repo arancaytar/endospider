@@ -1,6 +1,6 @@
 <?php
 
-function page_ranking($sort, $region, $r) {
+function page_ranking($sort, $region, $r = FALSE) {
   $orders = array('given' => 'given', 'received' => 'received', 'name' => 'nation');
   $order = $orders[$sort] .= (!empty($r) == ($sort!='name')) ? ' ASC' : ' DESC';
   $result = db_query('SELECT nation, given, received FROM {nation} WHERE region="%s" ORDER BY '. $order, $region);
@@ -21,4 +21,5 @@ function page_ranking($sort, $region, $r) {
   );
   $page->title = t('Ranking nations in @region', array('@region'), $region);
   $page->content = html_table($header, $rows);
+  return $page;
 }
