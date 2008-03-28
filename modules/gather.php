@@ -53,7 +53,7 @@ function gather_index($region) {
     if (count($nations)) {
       status(t('    Found !un UN nations: ', array('!un' => count($nations))) . implode(', ', $nations));
       status(t('    Writing nations to database...'));
-      db_write('nation', $nations, array('region' => $region), DB_REPLACE);
+      db_write('nation', $nations, array('region' => $region, 'indexed' => date('Y-m-d H:i:s')), DB_REPLACE);
     }
     status(t('    Projected time remaining: '. gather_time_remaining_1($meta['size'], $i, $un, $running / $requests)));
   }
@@ -76,7 +76,7 @@ function gather_scan($region) {
     
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
-      db_write('nation', $nation, array('received' => count($nation_data['endorsements']), 'active' => $nation_data['active']), DB_UPDATE);
+      db_write('nation', $nation, array('received' => count($nation_data['endorsements']), 'active' => $nation_data['active'], 'scanned' => date('Y-m-d H:i:s')), DB_UPDATE);
       $endorsements = array();
       foreach ($nation_data['endorsements'] as $giver) {
         $endorsements[] = array('giving' => $giver, 'receiving' => $nation);
@@ -94,6 +94,7 @@ function gather_scan($region) {
   db_query('CREATE TEMPORARY TABLE ngiven SELECT giving AS nation, COUNT(*) AS outgoing FROM {endorsement} GROUP BY giving');
   db_query('UPDATE {nation} NATURAL JOIN ngiven SET given = outgoing');
   status(t('Done with scan.'));
+  db_write('region', $region, array('scan_ended' => date('Y-m-d H:i:s'), DB_UPDATE));
   exit;
 }
 
