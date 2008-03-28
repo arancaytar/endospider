@@ -30,8 +30,8 @@ function page_overview() {
   foreach ($regions as $region) {
     $out .= "
     <tr>
-      <td>". l('region/'. $region['region'], $region['region']) ."</td>
-      <td>". l('nation/'. $region['nation'], $region['nation']) ."</td>
+      <td>". l('region/'. $region['region'], n($region['region'])) ."</td>
+      <td>". l('nation/'. $region['delegate'], n($region['delegate'])) ."</td>
       <td>$region[size]</td>
       <td>$region[un]</td>
       <td>". sprintf('%3.2f', $region['un'] / $region['size'] * 100) ."</td>

@@ -8,7 +8,8 @@ function page_venn_and($a, $b) {
   sort($display);
   $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
   $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  $page->title = t("Nations endorsing @a and @b", array('@a' => $a, '@b' => $b));
+  foreach ($display as &$row) $row['nation'] = n($row['nation']);
+  $page->title = t("Nations endorsing @a and @b", array('@a' => n($a), '@b' => n($b)));
   $page->content = t('There are %num nations in this set', array('%num' => count($display)));
   $page->content .= html_table($header, $display);
   return $page;
@@ -25,8 +26,8 @@ function page_venn_neither($a, $b) {
   $display = array_diff($set_total, $set_either);
   sort($display);
   $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  
-  $page->title = t("Nations endorsing neither @a nor @b", array('@a' => $a, '@b' => $b));
+  foreach ($display as &$row) $row['nation'] = n($row['nation']);
+  $page->title = t("Nations endorsing neither @a nor @b", array('@a' => n($a), '@b' => n($b)));
   $page->content = t('There are %num nations in this set', array('%num' => count($display)));
   $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
   $page->content .= html_table($header, $display);
@@ -40,7 +41,8 @@ function page_venn_left($a, $b) {
   $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
   sort($display);
   $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  $page->title = t("Nations endorsing @a and not @b", array('@a' => $a, '@b' => $b));
+  foreach ($display as &$row) $row['nation'] = n($row['nation']);
+  $page->title = t("Nations endorsing @a and not @b", array('@a' => n($a), '@b' => n($b)));
   $page->content = t('There are %num nations in this set', array('%num' => count($display)));
   $page->content .= html_table($header, $display);
   return $page;  

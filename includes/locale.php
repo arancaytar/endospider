@@ -14,6 +14,10 @@ function t($text, $placeholders = array()) {
   return str_replace(array_keys($placeholders), $placeholders, $text);
 }
 
+function n($name, $display = TRUE) {
+  return $display ? ucwords(str_replace('_', ' ', $name)) : strtolower(str_replace(' ', '_', $name));
+}
+
 function l($path = "", $anchor = "") {
   $url = url($path);
   if (!$anchor) return $url;
@@ -21,6 +25,7 @@ function l($path = "", $anchor = "") {
 }
 
 function url($path) {
+  if (preg_match('/^[a-z]+:\/\//', $path)) return $url; // absolute
   static $url = "";
   if (!$url) $url = dirname($_SERVER['PHP_SELF']);
   return "$url/$path";

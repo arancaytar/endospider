@@ -1,7 +1,7 @@
 <?php
 
 function page_region($region) {
-  $page->title = t('Region: @region', array('@region' => $region));
+  $page->title = t('Region: @region', array('@region' => n($region)));
   $r = db_read('region', array('size', 'delegate'), array('region' => $region));
   
   $un = db_fetch_array(db_query('SELECT COUNT(*) FROM {nation} WHERE `region` = "%s"', $region));
@@ -9,7 +9,7 @@ function page_region($region) {
   $delegate = db_read('nation', array('received'), array('nation' => $r['delegate']));
   $vice = db_fetch_array(db_query('SELECT `received` FROM {nation} WHERE `region` = "%s" ORDER BY `received` DESC LIMIT 1,1', $region));
   
-  $page->content =  '<p>'. t('This region contains %size nations and is ruled by UN delegate %delegate', array('%size' => $r['size'], '%delegate' => $r['delegate'])) .'</p>';
+  $page->content =  '<p>'. t('This region contains %size nations and is ruled by UN delegate %delegate', array('%size' => $r['size'], '%delegate' => n($r['delegate']))) .'</p>';
   
   $page->content .= t('
 <h3>Statistical overview</h3>
@@ -31,7 +31,7 @@ function page_region($region) {
   $header = array('nation' => t('Nation'), 'received' => t('Received'), 'given' => t('Given'));
   
   while ($row = db_fetch_array($res)) {
-    $row['nation'] = l('nation/'. $row['nation'], $row['nation']);
+    $row['nation'] = l('nation/'. $row['nation'], n($row['nation']));
     $received[] = $row;
   }
   
@@ -39,7 +39,7 @@ function page_region($region) {
                     WHERE `n`.`region` = "%s" GROUP BY `nation` ORDER BY `given` DESC LIMIT 0, 20', $region);
 
   while ($row = db_fetch_array($res)) {
-    $row['nation'] = l('nation/'. $row['nation'], $row['nation']);
+    $row['nation'] = l('nation/'. $row['nation'], n($row['nation']));
     $given[] = $row;
   }
   

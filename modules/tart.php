@@ -1,7 +1,7 @@
 <?php
 
 function page_tart_new($nation) {
-  $page->title = t('Which nations should @nation endorse?', array('@nation' => $nation));
+  $page->title = t('Which nations should @nation endorse?', array('@nation' => n($nation)));
   $region = db_read('nation', array('region'), array('nation' => $nation));
   $all_nations = db_read('nation', array('nation', 'active'), array('region' => $region));
   foreach ($all_nations as $i => $n) {
@@ -32,7 +32,7 @@ function page_tart_new($nation) {
   
   foreach ($score as $candidate => $my_score) {
     $rows[] = array(
-      'nation' => "<a href='http://nationstates.net/$candidate'>$candidate</a>",
+      'nation' => l("http://nationstates.net/$candidate", n($candidate)),
       'given' => $given[$candidate],
       'received' => $received[$candidate],
       'returned' => sprintf('%.2f', $my_score * 100). '% ('. $returned[$candidate] .')',
