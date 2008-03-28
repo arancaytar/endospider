@@ -4,9 +4,9 @@ function page_tart_new($nation) {
   $page->title = t('Which nations should @nation endorse?', array('@nation' => $nation));
   $region = db_read('nation', array('region'), array('nation' => $nation));
   $all_nations = db_read('nation', array('nation', 'active'), array('region' => $region));
-  foreach ($all_nations as $i => $nation) {
-    $all_nations[$i] = $nation['nation'];
-    $active[$nation['nation']] = (28 * 86400 - $nation['active']) / 28 / 86400;
+  foreach ($all_nations as $i => $n) {
+    $all_nations[$i] = $n['nation'];
+    $active[$n['nation']] = (28 * 86400 - $n['active']) / 28 / 86400;
   }
   $endorsed = db_read('endorsement', array('receiving'), array('giving' => $nation));
   $endorsing = db_read('endorsement', array('giving'), array('receiving' => $nation));
