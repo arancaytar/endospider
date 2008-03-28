@@ -18,6 +18,20 @@ th,td {
 	padding:3px;
 }
 
+th.sort-up a:hover,
+th.sorted-up a,
+th.sorted-down a:hover {
+  background:url(images/asc.png) center right no-repeat;
+  padding-right:12px;
+}
+
+th.sort-down a:hover,
+th.sorted-down a,
+th.sorted-up a:hover {
+  background:url(images/desc.png) center right no-repeat;
+  padding-right:12px;
+}
+
 th {
 	padding:10px;
 }
