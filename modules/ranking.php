@@ -19,7 +19,7 @@ function page_ranking($sort, $region, $r = FALSE) {
       'class' => ($sort == 'received' ? 'sorted-' . ($r ? 'up' : 'down') : 'sort-down'),
     ),
   );
-  $page->title = t('Ranking nations in @region', array('@region'), $region);
+  $page->title = t('Ranking nations in @region', array('@region' => $region));
   $page->content = html_table($header, $rows);
   return $page;
 }
