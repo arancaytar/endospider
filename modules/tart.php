@@ -46,7 +46,7 @@ function page_tart_new($nation) {
     'received' => t('Incoming'),
     'returned' => t('Rate of Return'), 
   );
-  $page->content = '<p>'. t("This view takes into account the various nations' endorsement behavior and activity. The highest-ranked nations" +
+  $page->content = '<p>'. t("This view takes into account the various nations' endorsement behavior and activity. The highest-ranked nations" .
   " are those that endorse everyone who endorses them, and noone else, and that were active very recently. Nations that hand out many endorsements 
   that are not returned (tarters) are penalized as their uncommonly high RoR falsely implies they pay attention to incoming endorsements when it actually has 
   little influence on their tarting behavior. In fact, endorsing them might make them pass you by - they only endorse people who have not yet endorsed them. 
