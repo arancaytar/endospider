@@ -25,7 +25,7 @@ function l($path = "", $anchor = "") {
 }
 
 function url($path) {
-  if (preg_match('/^[a-z]+:\/\//', $path)) return $url; // absolute
+  if (preg_match('/^[a-z]+:\/\//', $path)) return $path; // absolute
   static $url = "";
   if (!$url) $url = dirname($_SERVER['PHP_SELF']);
   return "$url/$path";
