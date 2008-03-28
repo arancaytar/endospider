@@ -41,7 +41,7 @@ function template_html($page) {
 
 function html_table($header, $rows) {
   $out = '<table>';
-  $out .= '<thead><tr><th>'. implode('</th><th>', $header) .'</th></tr></thead>';
+  $out .= '<thead><tr>'. html_table_header_($header) .'</tr></thead>';
   $out .= '<tbody>';
   
   foreach ($rows as $row) {
@@ -53,6 +53,14 @@ function html_table($header, $rows) {
   }
   $out .= '</tbody>';
   $out .= '</table>';
+  return $out;
+}
+
+function html_table_header_($header) {
+  foreach ($header as $cell) {
+    if (!is_array($cell)) $cell = array('data' => $cell);
+    $out .= '<th class="'. $cell['class'] .'">'. $cell['data'] .'</th>';
+  }
   return $out;
 }
 ?>
