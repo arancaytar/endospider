@@ -10,19 +10,19 @@ function page_ranking($sort, $region, $r = FALSE) {
   }
   $header = array(
     'nation' => array(
-      'data' => l('ranking/name'. ($sort == 'name' && !$r ? '/r' : ''), t('Nation')), 
+      'data' => l('ranking/name/'. $region . ($sort == 'name' && !$r ? '/r' : ''), t('Nation')), 
       'class' => ($sort == 'name' ? 'sorted-' . ($r ? 'down' : 'up') : 'sort-up'),
     ),  
     'given' => array(
-      'data' => l('ranking/given'. ($sort == 'given' && !$r ? '/r' : ''), t('Given')),
+      'data' => l('ranking/given/'. $region . ($sort == 'given' && !$r ? '/r' : ''), t('Given')),
       'class' => ($sort == 'given' ? 'sorted-' . ($r ? 'up' : 'down') : 'sort-down'),
     ),
     'received' => array(
-      'data' => l('ranking/received'. ($sort == 'received' && !$r ? '/r' : ''), t('Received')),
+      'data' => l('ranking/received/'. $region . ($sort == 'received' && !$r ? '/r' : ''), t('Received')),
       'class' => ($sort == 'received' ? 'sorted-' . ($r ? 'up' : 'down') : 'sort-down'),
     ),
   );
-  $page->title = t('Ranking nations in @region', array('@region' => $region));
+  $page->title = t('Ranking nations in @region', array('@region' => n($region)));
   $page->content = html_table($header, $rows);
   return $page;
 }
