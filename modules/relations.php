@@ -57,7 +57,7 @@ function page_relations_in($nation) {
   $returned = db_read(
     'endorsement', 
     array('receiving'), 
-    array('receiving' => $outgoing, 'giving' => $nation)
+    array('receiving' => $incoming, 'giving' => $nation)
   );
   
   $header = array(
