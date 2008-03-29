@@ -1,13 +1,14 @@
 <?php
 
 define('VERSION', '3.0alpha');
-define('VERSION_RV', 252);
+define('VERSION_RV', 340);
 
 require_once "includes/alias.php";
 require_once "includes/auth.php";
 require_once "includes/database.php";
 require_once "includes/form.php";
 require_once "includes/http.php";
+require_once "includes/json.php";
 require_once "includes/locale.php";
 require_once "includes/spider.php";
 require_once "includes/status.php";
@@ -26,6 +27,7 @@ require_once "template/html.php";
 include_once 'config.php';
 
 function main() {
+  session_start();
   $page = alias_execute($_GET['q']);
   if (!is_object($page)) $page = (object)(array('content' => $page));
   if (!$page->content_type) $page->content_type = 'application/xhtml+xml';
@@ -33,8 +35,11 @@ function main() {
   if (!$page->template) $page->template = 'html';
   header("Content-type: ". $page->content_type, $page->code);
   ob_start('ob_gzhandler');
+
   if (!empty($page->template)) {
     $function = 'template_'. $page->template;
+  }
+  if (function_exists($function)) {
     print $function($page);
   } else print $page->content;
   ob_end_flush();
