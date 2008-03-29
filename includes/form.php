@@ -15,7 +15,11 @@ function form($id) {
 
 function form_build($id) {
   $function = 'form_'. $id;
-  if (function_exists($function)) return $function();
+  if (function_exists($function)) {
+    $form = $function();
+    $form['#id'] = $id;
+  }
+  return $form;
 }
 
 function form_check_input($form, $post) {
@@ -31,16 +35,16 @@ function form_execute($id, $input) {
 }
 
 function form_render($form) {
-  $out = '<form method="post" action="'. $_SERVER['REQUEST_URI'] .'">';
+  $out = '<form id="form-'. $form['#id'] .'" method="post" action="'. $_SERVER['REQUEST_URI'] .'"><div>';
   $out .= form_render_($form);
-  $out .= '</form>';
+  $out .= '</div></form>';
   return $out;
 }
 
-function form_render_($fields, $prefix = array(), $root = '') {
+function form_render_($form, $prefix = array(), $root = '') {
   $out = '';
   $prefix[] = $root;
-  foreach ($fields as $id => $field) {
+  foreach (form_children($form) as $id => $field) {
     $render = form_render_field($field, $id, $prefix);
     $out .= $render[0] . form_render_(form_children($field), $prefix, $id) . $render[1];
   }
@@ -70,6 +74,11 @@ function form_render_field($field, $id, $prefix) {
 function form_render_field_text($field, $name) {
   $id = preg_replace('/[\[\]]+/', '-', $name);
   return '<label for="'. $id .'">'. $field['#title'] .'</label><input type="text" id="'. $id .'" name="'. $name .'" />';
+}
+
+function form_render_field_hidden($field, $name) {
+  $id = preg_replace('/[\[\]]+/', '-', $name);
+  return '<input type="hidden" id="'. $id .'" name="'. $name .'" value="'. $field['#value'] .'" />';
 }
 
 function form_render_field_password($field, $name) {
