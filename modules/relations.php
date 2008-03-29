@@ -20,6 +20,7 @@ function page_relations_out($nation) {
     array('receiving'), 
     array('giving' => $nation)
   );
+  if (!is_array($outgoing)) $outgoing = $outgoing ? array($outgoing) : array();
   $returned = db_read(
     'endorsement', 
     array('giving'), 
