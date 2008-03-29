@@ -1,0 +1,19 @@
+#status-wrapper {
+  display:none;
+  padding:20px;
+  width:80%;
+  margin-left:15%;
+}
+
+#status-progress {
+  height:20px;
+  width:300px;
+  padding:3px;
+  background-color:#ddd;
+}
+
+#status-progress-done {
+  background-color:#d00;
+  height:20px;
+  width:0px;
+}

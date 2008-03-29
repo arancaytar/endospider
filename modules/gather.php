@@ -3,13 +3,56 @@
 function page_gather() {
 	if (!auth()) return page_auth_login();
   
-  return form('gather');
+  $page->title = t('Gathering data');
+  
+  $page->content = "<p>The region entered will be scanned completely and saved in the database. The name must be entered in raw format, ie. 'my_region' rather than 'My Region'.
+  <strong>Caution:</strong> The scanner's database model is static and can only save one state of a region. Before beginning the scan, all previous data will be discarded irreversibly.</p>";
+  
+  $page->content .= form('gather');
+  $page->content .= '
+  <link rel="stylesheet" type="text/css" href="style/status.css" />
+  <script type="text/javascript" src="style/scripts/status.js" />
+  <div id="status-wrapper">
+    <div id="status-progress">
+      <div id="status-progress-done"></div>
+    </div>
+    <div id="status-description">
+      Time passed: <span id="status-time-passed">00:00</span>, expected time remaining: <span id="status-time-remaining">00:00</span>. 
+    </div>
+  </div>';
+  return $page;
 } 
+
+function page_gather_status() {
+  $page->content_type = 'application/json';
+  $status = array('done' => $_SESSION['done'], 'time' => interval($_SESSION['time']));
+  $page->template = 'none';
+  $page->content = json($status);
+  return $page;  
+}
+
+function interval($time) {
+  $seconds = $time % 60;
+  $time = ($time - $seconds) / 60;
+  $minutes = $time % 60;
+  $time = ($time - $minutes) / 60;
+  $hours = $time;
+  $out = array();
+  if ($hours) $out[] = "$hours hour". ($hours > 1) ? 's' : '';
+  if ($minutes) $out[] = "$minutes minute". ($minutes > 1) ? 's' : '';
+  if ($seconds) $out[] = "$seconds second". ($second > 1) ? 's' : '';
+  return implode(" ", $out);
+}
 
 function form_gather() {
   $form['region'] = array(
     '#type' => 'text',
     '#title' => t('Region'),
+  );
+  $form['ajax'] = array(
+    '#type' => 'hidden',
+    '#value' => 0,
+    
   );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -19,7 +62,11 @@ function form_gather() {
 }
 
 function form_gather_submit($values) {
-  header('Content-type: text/plain');
+  if (!$values['ajax']) {
+    header('Content-type: text/plain');    
+  }
+  $_SESSION['ajax'] = $values['ajax'];
+
   $region = $values['region'];
   db_query('DELETE FROM {region} WHERE region="%s"', $region);
   db_query('DELETE FROM {nation} WHERE region="%s"', $region);
@@ -55,7 +102,9 @@ function gather_index($region) {
       status(t('    Writing nations to database...'));
       db_write('nation', $nations, array('region' => $region, 'indexed' => date('Y-m-d H:i:s')), DB_REPLACE);
     }
-    status(t('    Projected time remaining: '. gather_time_remaining_1($meta['size'], $i, $un, $running / $requests)));
+    $remaining = gather_time_remaining_1($meta['size'], $i, $un, $running / $requests);
+    status(t('    Projected time remaining: '. $remaining));
+    progress(0.5 * $i / $meta['size'], $remaining); 
   }
   status(t('Done with indexing.'));
 }
@@ -76,7 +125,7 @@ function gather_scan($region) {
     
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
-      db_write('nation', $nation, array('received' => count($nation_data['endorsements']), 'active' => $nation_data['active'], 'scanned' => date('Y-m-d H:i:s')), DB_UPDATE);
+      db_write('nation', $nation, array('received' => count($nation_data['endorsements']), 'active' => $nation_data['active'], 'scanned' => date('Y-m-d H:i:s'), 'flag' => $nation['flag']), DB_UPDATE);
       $endorsements = array();
       foreach ($nation_data['endorsements'] as $giver) {
         $endorsements[] = array('giving' => $giver, 'receiving' => $nation);
@@ -87,20 +136,23 @@ function gather_scan($region) {
       db_write('nation', $nation, NULL, DB_DELETE);
     }
     $running = status('    Done with nation.') - $start;
-    status(t('    Projected time remaining: '. gather_time_remaining_2(count($nations), $i, $running / $requests)));
+    $remaining = gather_time_remaining_2(count($nations), $i, $running / $requests);
+    status(t('    Projected time remaining: '. $remaining));
+    progress(0.5 + 0.5 * $i / count($nations), $remaining);
   }
   
   status(t('Saving the given counts.'));
   db_query('CREATE TEMPORARY TABLE ngiven SELECT giving AS nation, COUNT(*) AS outgoing FROM {endorsement} GROUP BY giving');
   db_query('UPDATE {nation} NATURAL JOIN ngiven SET given = outgoing');
   status(t('Done with scan.'));
-  db_write('region', $region, array('scan_ended' => date('Y-m-d H:i:s'), DB_UPDATE));
+  progress(1, 0);
+  db_write('region', $region, array('scan_ended' => date('Y-m-d H:i:s')), DB_UPDATE);
   exit;
 }
 
 function gather_time_remaining_1($size, $progress, $un, $avg) {
   //print "$un nations in $progress out of $size : ";
-  $un = $un / $progress * $size;
+  $un = $un / ($progress + 1) * ($size + 1);
   //print "$un projected. ";
   //print "$avg time per request * ". (($size - $progress)/15) ." requests to go: "; 
   $time = $avg * ($size - $progress) / 15;

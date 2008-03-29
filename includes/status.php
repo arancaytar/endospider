@@ -25,12 +25,19 @@ function status($message) {
   
   $since_last = $current - $last;
   $since_begin = $current - $start;
-  
-  print "$since_begin\t\t$message\n";
-  flush();
+ 
+  if (!$_SESSION['ajax']) {
+    print "$since_begin\t\t$message\n";
+    flush();
+  }
   
   $last = $current;
   return $since_begin;
+}
+
+function progress($done, $time) {
+  $_SESSION['done'] = (int)($done * 100);
+  $_SESSION['time'] = (int)$time;
 }
 
 function get_region_status($region) {
