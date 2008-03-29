@@ -103,13 +103,18 @@ a:visited {
   margin-bottom:4px;
 }
 a.external, a[rel=external], a[href^="http:"] {
-	background: url(/images/external.png) center right no-repeat;
+	background: url(images/external.png) center right no-repeat;
 	padding-right: 13px;
 }
 a.mail, a[href^="mailto:"]
 {
-	background: url(/images/mail.png) center right no-repeat;
+	background: url(images/mail.png) center right no-repeat;
 	padding-right: 20px;
+}
+
+a[rel="certificate"] {
+  background:none;
+  padding-right: 0px;
 }
 
 dt {
