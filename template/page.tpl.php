@@ -27,7 +27,8 @@
       type="text/css" 
       media="print" 
       href="style/print.css" />
-      
+<script type="text/javascript" src="style/scripts/jquery.js"></script>
+<script type="text/javascript" src="style/scripts/jquery.form.js"></script>
 </head>
 
 <body>
@@ -63,17 +64,17 @@
 </div>
 <div class="filled-box" id="footer">
 <em>EndoSpider <?=VERSION?> rv:<?=VERSION_RV?></em><br/>
-<a href="http://validator.w3.org/check?uri=referer"><img
+<a rel="certificate" href="http://validator.w3.org/check?uri=referer"><img
 					src="http://www.w3.org/Icons/valid-xhtml10"
 					alt="Valid XHTML 1.0 Strict" height="31" width="88" style="float:left" /></a>
- <a href="http://jigsaw.w3.org/css-validator">
+ <a rel="certificate" href="http://jigsaw.w3.org/css-validator">
   <img style="border:0;width:88px;height:31px;float:left"
        src="http://jigsaw.w3.org/css-validator/images/vcss"
        alt="Valid CSS!" />
  </a>
   This page can be viewed in any standards-compliant browser.<br/>
   Recommended: <a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=96065&amp;t=54">Firefox 
-  3.0</a> or <a href="http://www.opera.com">Opera 9</a>.<hr/>
+  3.0</a> or <a href="http://www.opera.com">Opera 9.5</a>.<hr/>
 <small><em>EndoSpider was developed by Arancaytar, aka <a href="mailto:ermarian@gmail.com">Ermarian</a>.
  Visit my site at <a href="http://ermarian.net">The Ermarian Network</a>.</em></small></div>
 </body>
