@@ -24,6 +24,10 @@ function l($path = "", $anchor = "") {
   return '<a href="'. $url .'">'. $anchor .'</a>';
 }
 
+function nl($nation) {
+  return l('http://nationstates.net/'. $nation, n($nation));
+}
+
 function url($path) {
   if (preg_match('/^[a-z]+:\/\//', $path)) return $path; // absolute
   static $url = "";
