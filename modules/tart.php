@@ -19,14 +19,14 @@ function page_tart_new($nation) {
   foreach ($not_endorsed as $candidate) {
     $my_received = db_read('endorsement', array('giving'), array('receiving' => $candidate));
     $my_given = db_read('endorsement', array('receiving'), array('giving' => $candidate));
-    if (!is_array($my_received)) $my_received = array($my_received);
-    if (!is_array($my_given)) $my_given = array($my_given);
+    if (!is_array($my_received)) $my_received = $my_received ? array($my_received) : array();
+    if (!is_array($my_given)) $my_given =  $my_given ? array($my_given) : array();
     $my_returned = array_intersect($my_received, $my_given);
-    
+
     $returned[$candidate] = count($my_returned);
     $received[$candidate] = count($my_received);
     $given[$candidate] = count($my_given);
-    $score[$candidate] = $returned[$candidate] / $received[$candidate] * sqrt($returned[$candidate] / $given[$candidate]) * sqrt($active[$candidate]);
+    $score[$candidate] = ($returned[$candidate]+1) / ($received[$candidate]+1) * sqrt(($returned[$candidate]+1) / ($given[$candidate]+1)) * sqrt($active[$candidate]);
   }
   
   arsort($score);
