@@ -81,7 +81,7 @@ function db_schema($record = NULL) {
   static $schema = array(
     'nation' => array(
       'fields' => array(
-        'nation', 'region', 'received', 'given', 'indexed', 'scanned', 'active',
+        'nation', 'region', 'received', 'given', 'indexed', 'scanned', 'active', 'flag'
       ),
       'key' => 'nation',
     ),

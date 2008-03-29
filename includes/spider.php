@@ -35,6 +35,11 @@ function spider_nation($nation_name) {
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   $nation['region'] = $match[1];
   
+  if (preg_match('/<img class="bigflag"[^a-z]+src="\/images\/flags\/(.*)"/', $response->data, $match)) {
+    $nation['flag'] = $match[1];
+  }
+
+  
   if (preg_match('/<p style="font-size:8pt"><strong>Most Recent Government Activity:<\/strong>[^0-9a-z]*([0-9]+) (day|hour|minute)s? ago<\/p>/', $response->data, $match)) {
     $nation['active'] = $match[1];
     switch ($match[2]) {
@@ -54,7 +59,6 @@ function spider_nation($nation_name) {
   if (count($nation['endorsements']) != $match[1]) {
     status(t('This page failed a sanity check - @a nations are not @b.', 
     array('@a' => count($nation['endorsements']), '@b' => $match[1])));
-    return false;
   }
   return $nation;
 }
