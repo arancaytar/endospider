@@ -83,7 +83,7 @@ function form_render_field_hidden($field, $name) {
 
 function form_render_field_textarea($field, $name) {
   $id = preg_replace('/[\[\]]+/', '-', $name);
-  return '<textarea id="'. $id .'" name="'. $name .'">'. $field['#value'] .'</textare>';
+  return '<textarea id="'. $id .'" name="'. $name .'">'. $field['#value'] .'</textarea>';
 }
 
 function form_render_field_password($field, $name) {
