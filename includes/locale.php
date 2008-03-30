@@ -38,10 +38,10 @@ function url($path) {
 function interval($seconds) {
   $seconds = floor($seconds);
   $time = array(
-    'second' => $seconds % 60,
-    'minute' => floor($seconds / 60) % 60,
+    'day' => floor($seconds / 86400),  
     'hour' => floor($seconds / 3600) % 24,
-    'day' => floor($seconds / 86400),
+    'minute' => floor($seconds / 60) % 60,
+    'second' => $seconds % 60,
   );
   foreach ($time as $unit => $amount) {
     if ($amount) $out[] = t('%s '. $unit. ($amount > 1 ? 's' : ''), array('%s' => $amount)); 
