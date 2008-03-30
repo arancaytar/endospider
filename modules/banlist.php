@@ -22,6 +22,6 @@ function form_banlist_submit($values) {
   $nations = explode("\n", $values['nations']);
   foreach ($nations as $nation) {
     $data = spider_nation($nation);
-    print "$nation\t". $data['un'] ."\t". $data['region'] ."\t". count($data['endorsements']) ."\n";
+    print "$nation\t". ($data['un'] ? "UN" : "NO") ."\t". $data['region'] ."\t". count($data['endorsements']) ."\n";
   }
 }
