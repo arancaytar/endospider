@@ -70,7 +70,7 @@ function page_venn($a, $b) {
       'set' => $label[$set],
     );
   }
-  $page->title = t('Relations with @a or @b', array('@a' => $a, '@b' => $b));
+  $page->title = t('Relations with @a or @b', array('@a' => n($a), '@b' => n(b)));
   $page->content = html_table($header, $row);
   return $page;
 } 

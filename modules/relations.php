@@ -43,7 +43,7 @@ function page_relations_out($nation) {
     $row[$ret]['returned'] = t('Yes');
   }
   
-  $page->title = t('Nations endorsed by @nation', array('@nation' => $nation));
+  $page->title = t('Nations endorsed by @nation', array('@nation' => n($nation)));
   $page->content = html_table($header, $row);
   return $page;
 }
@@ -76,7 +76,7 @@ function page_relations_in($nation) {
     $row[$ret]['returned'] = t('Yes');
   }
   
-  $page->title = t('Nations endorsing @nation', array('@nation' => $nation));
+  $page->title = t('Nations endorsing @nation', array('@nation' => n($nation)));
   $page->content = html_table($header, $row);
   return $page;
 }
