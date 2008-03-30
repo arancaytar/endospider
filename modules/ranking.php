@@ -4,9 +4,9 @@ function page_ranking($sort, $region, $r = FALSE) {
   $orders = array('given' => 'given', 'received' => 'received', 'name' => 'nation');
   $order = $orders[$sort] .= (!empty($r) == ($sort!='name')) ? ' ASC' : ' DESC';
   $result = db_query('SELECT nation, given, received, flag, influence FROM {nation} WHERE region="%s" ORDER BY '. $order, $region);
-  $i = $j = $last = 1;
+  $i = $j = $last = 0;
   while ($row = db_fetch_array($result)) {
-    $row['rank'] = $i++ && ($last != $row['received']) ? $i : $j;
+    $row['rank'] = ++$i && ($last != $row['received']) ? $i : $j;
     $last = $row['received'];
     $j = $row['rank'];
     $row['nation'] = nl($row['nation']);

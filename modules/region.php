@@ -30,9 +30,9 @@ function page_region($region) {
   
   $header = array('rank' => t('#'), 'nation' => t('Nation'), 'received' => t('Received'), 'given' => t('Given'));
   
-  $i = $j = $last = 1;
+  $i = $j = $last = 0;
   while ($row = db_fetch_array($res)) {
-    $row['rank'] = $i++ && ($last != $row['received']) ? $i : $j;
+    $row['rank'] = ++$i && ($last != $row['received']) ? $i : $j;
     $last = $row['received'];
     $j = $row['rank'];
     $row['nation'] = nl($row['nation']);
@@ -42,9 +42,9 @@ function page_region($region) {
   $res = db_query('SELECT `nation`, `received`, COUNT(*) AS `given` FROM {nation} `n` JOIN {endorsement} `e` ON `nation` = `giving` 
                     WHERE `n`.`region` = "%s" GROUP BY `nation` ORDER BY `given` DESC LIMIT 0, 20', $region);
 
-  $i = $j = $last = 1;
+  $i = $j = $last = 0;
   while ($row = db_fetch_array($res)) {
-    $row['rank'] = $i++ && ($last != $row['received']) ? $i : $j;
+    $row['rank'] = ++$i && ($last != $row['received']) ? $i : $j;
     $last = $row['received'];
     $j = $row['rank'];
     $row['nation'] = nl($row['nation']);
@@ -52,10 +52,10 @@ function page_region($region) {
   }
   
   $page->content .= '<h3>'. t('Top twenty powers') .'</h3>';
-  $page->content .= '<p>'. l('ranking/received/'. $region, t(n($region))). '</p>';
+  $page->content .= '<p>'. l('ranking/received/'. $region, t('View all')). '</p>';
   $page->content .= html_table($header, $received);
   $page->content .= '<h3>'. t('Top twenty tarters') .'</h3>';
-  $page->content .= '<p>'. l('ranking/given/'. $region, t(n($region))). '</p>';
+  $page->content .= '<p>'. l('ranking/given/'. $region, t('View all')). '</p>';
   $page->content .= html_table($header, $given);
 
   return $page;
