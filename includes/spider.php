@@ -35,7 +35,7 @@ function spider_nation($nation_name) {
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   $nation['region'] = $match[1];
   
-  if (preg_match('/<img class="bigflag"[^a-z]+src="\/images\/flags\/(.*)"/', $response->data, $match)) {
+  if (preg_match('/<img class="bigflag"[^a-z]+src="\/images\/flags\/(.+)"/', $response->data, $match)) {
     $nation['flag'] = $match[1];
   }
 
