@@ -28,7 +28,7 @@ function l($path = "", $anchor = "", $attributes = array()) {
   foreach ($default as $attr => $value) {
     $set[] = $attr .'="'. $value .'"';
   }
-  return '<a '. implode(' ') .'>'. $anchor .'</a>';
+  return '<a '. implode(' ', $set) .'>'. $anchor .'</a>';
 }
 
 function nl($nation) {
@@ -50,6 +50,8 @@ function interval($seconds) {
     'minute' => floor($seconds / 60) % 60,
     'second' => $seconds % 60,
   );
+  $out = array();
+
   foreach ($time as $unit => $amount) {
     if ($amount) $out[] = t('%s '. $unit. ($amount > 1 ? 's' : ''), array('%s' => $amount)); 
   }
