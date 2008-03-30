@@ -112,7 +112,18 @@ function gather_scan($region) {
     
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
-      db_write('nation', $nation, array('received' => count($nation_data['endorsements']), 'active' => $nation_data['active'], 'scanned' => date('Y-m-d H:i:s'), 'flag' => $nation_data['flag']), DB_UPDATE);
+      db_write(
+        'nation', 
+        $nation, 
+        array(
+          'received' => count($nation_data['endorsements']), 
+          'active' => $nation_data['active'], 
+          'scanned' => date('Y-m-d H:i:s'), 
+          'flag' => $nation_data['flag'],
+          'influence' => $nation_data['influence'],
+        ), 
+        DB_UPDATE
+      );
       $endorsements = array();
       foreach ($nation_data['endorsements'] as $giver) {
         $endorsements[] = array('giving' => $giver, 'receiving' => $nation);

@@ -52,6 +52,10 @@ function spider_nation($nation_name) {
     }
   }
   else $nation['active'] = 0;
+  
+  preg_match('/<h4>Regional Influence: <span style="font-weight: normal">(.+?)<\/span><\/h4>/', $response->data, $match);
+  $nation['influence'] = $match[1];
+  
   preg_match('/Endorsements Received: ([0-9]*) \((.*?)\)/', $response->data, $match);
   spider_nation_stack_();
   $out = preg_replace('/"nation=([a-z0-9_\-]*)"/e', 'spider_nation_stack_("$1")', $match[2]);
