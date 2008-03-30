@@ -138,3 +138,7 @@ div#messages ul {
 label {
   padding-right:3px;
 }
+
+#nation-box {
+  display:none;
+}

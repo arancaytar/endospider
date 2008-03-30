@@ -18,14 +18,21 @@ function n($name, $display = TRUE) {
   return $display ? ucwords(str_replace('_', ' ', $name)) : strtolower(str_replace(' ', '_', $name));
 }
 
-function l($path = "", $anchor = "") {
-  $url = url($path);
-  if (!$anchor) return $url;
-  return '<a href="'. $url .'">'. $anchor .'</a>';
+function l($path = "", $anchor = "", $attributes = array()) {
+  static $valid = array('class', 'href', 'rel', 'id', 'style', 'title');
+  $default = array('href' => url($path));
+  foreach ($valid as $attr) {
+    if ($attributes[$attr]) $default[$attr] = $attributes[$attr];
+  } 
+  if (!$anchor) return $default['href'];
+  foreach ($default as $attr => $value) {
+    $set[] = $attr .'="'. $value .'"';
+  }
+  return '<a '. implode(' ') .'>'. $anchor .'</a>';
 }
 
 function nl($nation) {
-  return l('http://nationstates.net/'. $nation, n($nation));
+  return l('http://nationstates.net/'. $nation, n($nation), array('rel' => 'nation-link', 'class' => 'link-'. $nation));
 }
 
 function url($path) {
