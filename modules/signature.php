@@ -11,9 +11,9 @@ function page_signature() {
     ceil($nations['great_bights_mum'] / $total * 468), 
     60, imagecolorallocate($im, 0, 0, 255)
   );
-  imagefilledrectangle($im, ceil($nations['lewis_and_clark'] / $total * 468), 0, 468, 60, imagecolorallocate($im, 255, 0, 0));
-  imagestring($im, 5, ceil($nations['great_bights_mum'] / $total * 324), 20, $nations['great_bights_mum'], imagecolorallocate($im, 255, 255, 255));
-  imagestring($im, 5, 324 + ceil($nations['lewis_and_clark'] / $total * 324), 20, $nations['lewis_and_clark'], imagecolorallocate($im, 0, 0, 0));
+  imagefilledrectangle($im, 468 - ceil($nations['lewis_and_clark'] / $total * 468), 0, 468, 60, imagecolorallocate($im, 255, 0, 0));
+  imagestring($im, 5, ceil($nations['great_bights_mum'] / $total * 234), 20, $nations['great_bights_mum'], imagecolorallocate($im, 255, 255, 255));
+  imagestring($im, 5, 234 + ceil($nations['lewis_and_clark'] / $total * 234), 20, $nations['lewis_and_clark'], imagecolorallocate($im, 0, 0, 0));
   ob_start();
   imagepng($im);
   $out = ob_get_clean();
