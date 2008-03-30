@@ -72,4 +72,5 @@ function page_venn($a, $b) {
   }
   $page->title = t('Relations with @a or @b', array('@a' => $a, 'b' => $b));
   $page->content = html_table($header, $row);
+  return $page;
 } 
