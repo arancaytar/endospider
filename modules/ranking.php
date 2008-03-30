@@ -4,12 +4,15 @@ function page_ranking($sort, $region, $r = FALSE) {
   $orders = array('given' => 'given', 'received' => 'received', 'name' => 'nation');
   $order = $orders[$sort] .= (!empty($r) == ($sort!='name')) ? ' ASC' : ' DESC';
   $result = db_query('SELECT nation, given, received, flag, influence FROM {nation} WHERE region="%s" ORDER BY '. $order, $region);
+  $i = 1;
   while ($row = db_fetch_array($result)) {
+    $row['rank'] = $i++;
     $row['nation'] = nl($row['nation']);
     $row['flag'] = '<img src="http://www.nationstates.net/images/flags/'. $row['flag'] .'" width="32" height="24" />';
     $rows[] = $row;
   }
   $header = array(
+    'rank' => t('#'),
     'nation' => array(
       'data' => l('ranking/name/'. $region . ($sort == 'name' && !$r ? '/r' : ''), t('Nation')), 
       'class' => ($sort == 'name' ? 'sorted-' . ($r ? 'down' : 'up') : 'sort-up'),
