@@ -1,7 +1,7 @@
 <?php
 
 define('VERSION', '3.0alpha');
-define('VERSION_RV', 340);
+define('VERSION_RV', 367);
 
 require_once "includes/alias.php";
 require_once "includes/auth.php";
