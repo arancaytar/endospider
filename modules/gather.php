@@ -31,19 +31,6 @@ function page_gather_status() {
   return $page;  
 }
 
-function interval($time) {
-  $seconds = $time % 60;
-  $time = ($time - $seconds) / 60;
-  $minutes = $time % 60;
-  $time = ($time - $minutes) / 60;
-  $hours = $time;
-  $out = array();
-  if ($hours) $out[] = "$hours hour". ($hours > 1) ? 's' : '';
-  if ($minutes) $out[] = "$minutes minute". ($minutes > 1) ? 's' : '';
-  if ($seconds) $out[] = "$seconds second". ($second > 1) ? 's' : '';
-  return implode(" ", $out);
-}
-
 function form_gather() {
   $form['region'] = array(
     '#type' => 'text',
