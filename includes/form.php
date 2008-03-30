@@ -81,6 +81,11 @@ function form_render_field_hidden($field, $name) {
   return '<input type="hidden" id="'. $id .'" name="'. $name .'" value="'. $field['#value'] .'" />';
 }
 
+function form_render_field_hidden($field, $name) {
+  $id = preg_replace('/[\[\]]+/', '-', $name);
+  return '<textarea id="'. $id .'" name="'. $name .'">'. $field['#value'] .'</textare>';
+}
+
 function form_render_field_password($field, $name) {
   $id = preg_replace('/[\[\]]+/', '-', $name);
   return '<label for="'. $id .'">'. $field['#title'] .'</label><input type="password" id="'. $id .'" name="'. $name .'" />';

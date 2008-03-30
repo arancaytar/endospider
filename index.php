@@ -14,6 +14,7 @@ require_once "includes/spider.php";
 require_once "includes/status.php";
 
 require_once "modules/auth.php";
+require_once "modules/banlist.php";
 require_once "modules/error.php";
 require_once "modules/gather.php";
 require_once "modules/overview.php";

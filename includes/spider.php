@@ -33,6 +33,9 @@ function spider_nation($nation_name) {
   $response = http("http://www.nationstates.net/page=display_nation/nation=$nation_name");
   if (!preg_match('/src="\/images\/smalleyelogo\.jpg"/', $response->data)) return false;
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
+  
+  $nation['un'] = preg_match('/un_member/', $response->data);
+  
   $nation['region'] = $match[1];
   
   if (preg_match('/<img class="bigflag"[^a-z]+src="\/images\/flags\/(.+)"/', $response->data, $match)) {
