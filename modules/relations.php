@@ -26,6 +26,7 @@ function page_relations_out($nation) {
     array('giving'), 
     array('giving' => $outgoing, 'receiving' => $nation)
   );
+  if (!is_array($returned)) $returned = $returned ? array($returned) : array();
   
   $header = array(
     'nation' => t('Nation'),
@@ -59,7 +60,7 @@ function page_relations_in($nation) {
     array('receiving'), 
     array('receiving' => $incoming, 'giving' => $nation)
   );
-  
+  if (!is_array($returned)) $returned = $returned ? array($returned) : array();  
   $header = array(
     'nation' => t('Nation'),
     'returned' => t('Returned'),
