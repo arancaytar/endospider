@@ -53,21 +53,23 @@ function page_venn($a, $b) {
   $region = db_read('nation', array('region'), array('nation' => array($a, $b)));
   if (count(array_unique($region)) > 1) return page_error_404();
   $region = $region[0];
-  $total = db_read('nation', array('nation'), array('region' => $region));
+  $total = db_read('nation', array('nation', 'active'), array('region' => $region));
   $set_a = db_read('endorsement', array('giving'), array('receiving' => $a));
   $set_b = db_read('endorsement', array('giving'), array('receiving' => $b));
-  sort($total);
   $header = array(
     'nation' => t('Nation'),
     'set' => t('Endorses'),
+    'active' => t('Last active'),
   );
   $label = array(t('Neither'), nl($b), nl($a), t('Both'));
-  foreach ($total as $nation) {
+  foreach ($total as $n) {
+    $nation = $n['nation'];
     $set = in_array($nation, $set_a) * 2;
     $set += in_array($nation, $set_b);
     $row[$nation] = array(
       'nation' => nl($nation),
       'set' => $label[$set],
+      'active' => interval($n['active']) . ' ago',
     );
   }
   $page->title = t('Relations with @a or @b', array('@a' => n($a), '@b' => n(b)));
