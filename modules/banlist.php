@@ -23,6 +23,7 @@ function form_banlist_submit($values) {
   print "#\tNation\tUN?\tRegion\tEndorsements";
   $nations = explode("\n", $values['nations']);
   foreach ($nations as $i=>$nation) {
+    $nation = trim($nation);
     $data = spider_nation($nation);
     print "$i\t$nation\t". ($data['un'] ? "UN" : "-") ."\t". $data['region'] ."\t". count($data['endorsements']) ."\n";
   }
