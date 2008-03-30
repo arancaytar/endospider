@@ -16,7 +16,7 @@ function page_signature() {
   imagestring($im, 5, 324 + ceil($nations['lewis_and_clark'] / $total * 324), 20, $nations['lewis_and_clark'], imagecolorallocate($im, 0, 0, 0));
   ob_start();
   imagepng($im);
-  $out = ob_get_end();
+  $out = ob_get_clean();
   $page->content_type = 'image/png';
   $page->template = 'image';
   $page->content = $out;
