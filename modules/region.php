@@ -9,7 +9,7 @@ function page_region($region) {
   $delegate = db_read('nation', array('received'), array('nation' => $r['delegate']));
   $vice = db_fetch_array(db_query('SELECT `received` FROM {nation} WHERE `region` = "%s" ORDER BY `received` DESC LIMIT 1,1', $region));
   
-  $page->content =  '<p>'. t('This region contains %size nations and is ruled by UN delegate %delegate', array('%size' => $r['size'], '%delegate' => n($r['delegate']))) .'</p>';
+  $page->content =  '<p>'. t('This region contains %size nations and is ruled by UN delegate !delegate', array('%size' => $r['size'], '!delegate' => nl($r['delegate']))) .'</p>';
   
   $page->content .= t('
 <h3>Statistical overview</h3>
@@ -28,22 +28,35 @@ function page_region($region) {
   $res = db_query('SELECT `nation`, `received`, COUNT(*) AS `given` FROM {nation} `n` JOIN {endorsement} `e` ON `nation` = `giving` 
                     WHERE `n`.`region` = "%s" GROUP BY `nation` ORDER BY `received` DESC LIMIT 0, 20', $region);
   
-  $header = array('nation' => t('Nation'), 'received' => t('Received'), 'given' => t('Given'));
+  $header = array('rank' => t('#'), 'nation' => t('Nation'), 'received' => t('Received'), 'given' => t('Given'));
   
+  $i = $j = $last = 1;
   while ($row = db_fetch_array($res)) {
-    $row['nation'] = l('nation/'. $row['nation'], n($row['nation']));
+    $row['rank'] = $i++ && ($last != $row['received']) ? $i : $j;
+    $last = $row['received'];
+    $j = $row['rank'];
+    $row['nation'] = nl($row['nation']);
     $received[] = $row;
   }
   
   $res = db_query('SELECT `nation`, `received`, COUNT(*) AS `given` FROM {nation} `n` JOIN {endorsement} `e` ON `nation` = `giving` 
                     WHERE `n`.`region` = "%s" GROUP BY `nation` ORDER BY `given` DESC LIMIT 0, 20', $region);
 
+  $i = $j = $last = 1;
   while ($row = db_fetch_array($res)) {
-    $row['nation'] = l('nation/'. $row['nation'], n($row['nation']));
+    $row['rank'] = $i++ && ($last != $row['received']) ? $i : $j;
+    $last = $row['received'];
+    $j = $row['rank'];
+    $row['nation'] = nl($row['nation']);
     $given[] = $row;
   }
   
-  $page->content .= '<h3>Top twenty powers</h3>'. html_table($header, $received);
-  $page->content .= '<h3>Top twenty tarters</h3>'. html_table($header, $given);
+  $page->content .= '<h3>'. t('Top twenty powers') .'</h3>';
+  $page->content .= '<p>'. l('ranking/received/'. $region, t(n($region))). '</p>';
+  $page->content .= html_table($header, $received);
+  $page->content .= '<h3>'. t('Top twenty tarters') .'</h3>';
+  $page->content .= '<p>'. l('ranking/given/'. $region, t(n($region))). '</p>';
+  $page->content .= html_table($header, $given);
+
   return $page;
 }
