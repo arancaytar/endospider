@@ -19,9 +19,11 @@ function form_banlist() {
 }
 
 function form_banlist_submit($values) {
+  header("Content-type: text/plain");
+  print "#\tNation\tUN?\tRegion\tEndorsements";
   $nations = explode("\n", $values['nations']);
-  foreach ($nations as $nation) {
+  foreach ($nations as $i=>$nation) {
     $data = spider_nation($nation);
-    print "$nation\t". ($data['un'] ? "UN" : "NO") ."\t". $data['region'] ."\t". count($data['endorsements']) ."\n";
+    print "$i\t$nation\t". ($data['un'] ? "UN" : "-") ."\t". $data['region'] ."\t". count($data['endorsements']) ."\n";
   }
 }
