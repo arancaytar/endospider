@@ -21,6 +21,7 @@ require_once "modules/overview.php";
 require_once "modules/ranking.php";
 require_once "modules/region.php";
 require_once "modules/relations.php";
+require_once "modules/signature.php";
 require_once "modules/venn.php";
 require_once "modules/tart.php";
 
