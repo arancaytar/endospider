@@ -8,9 +8,18 @@ function page_venn_and($a, $b) {
   sort($display);
   $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
   $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  foreach ($display as &$row) $row['nation'] = l('http://nationstates.net/'. $row['nation'], n($row['nation']));
+  foreach ($display as &$row) $row['nation'] = nl($row['nation']);
   $page->title = t("Nations endorsing @a and @b", array('@a' => n($a), '@b' => n($b)));
-  $page->content = t('There are %num nations in this set', array('%num' => count($display)));
+  $page->content = '<p>'. t('Venn diagram subsets: <ul><li>!all</li><li>!neither</li><li>!left</li><li>!right</li><li>!both</li></ul>', 
+    array(
+      '!all' => l('venn/'. $a .'/'. $b, 'all'),
+      '!neither' => l('venn/neither/'. $a .'/'. $b, 'neither'),
+      '!both' => l('venn/and/'. $a .'/'. $b, 'both'),
+      '!left' => l('venn/left/'. $a .'/'. $b, n($a) .' and not '. n($b)),
+      '!right' => l('venn/right/'. $a .'/'. $b, n($b) .' and not '. n($a)),
+    )
+  ) .'</p>';
+  $page->content .= t('There are %num nations in this set', array('%num' => count($display)));
   $page->content .= html_table($header, $display);
   return $page;
 }
@@ -25,11 +34,25 @@ function page_venn_neither($a, $b) {
   
   $display = array_diff($set_total, $set_either);
   sort($display);
-  $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  foreach ($display as &$row) $row['nation'] = l('http://nationstates.net/'. $row['nation'], n($row['nation']));
+  $display = db_read('nation', array('nation', 'received', 'flag', 'influence', 'given', 'active'), array('nation' => $display));
+  foreach ($display as &$row) {
+    $row['nation'] = nl($row['nation']);
+    $row['image'] = flag($row['flag']);
+    $row['active'] = interval($row['active']) .' ago';
+  }
   $page->title = t("Nations endorsing neither @a nor @b", array('@a' => n($a), '@b' => n($b)));
-  $page->content = t('There are %num nations in this set', array('%num' => count($display)));
-  $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
+  $page->content = '<p>'. t('Venn diagram subsets: <ul><li>!all</li><li>!neither</li><li>!left</li><li>!right</li><li>!both</li></ul>', 
+    array(
+      '!all' => l('venn/'. $a .'/'. $b, 'all'),
+      '!neither' => l('venn/neither/'. $a .'/'. $b, 'neither'),
+      '!both' => l('venn/and/'. $a .'/'. $b, 'both'),
+      '!left' => l('venn/left/'. $a .'/'. $b, n($a) .' and not '. n($b)),
+      '!right' => l('venn/right/'. $a .'/'. $b, n($b) .' and not '. n($a)),
+    )
+  ) .'</p>';
+  $page->content .= '<p>'. t('There are %num nations in this set', array('%num' => count($display))) .'</p>';
+  $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'), 'flag' => t('Flag'), 'influence' => t('Influence'), 'given' => t('Given'),
+    'active' => t('Last active'));
   $page->content .= html_table($header, $display);
   return $page;
 }
@@ -41,11 +64,24 @@ function page_venn_left($a, $b) {
   $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
   sort($display);
   $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  foreach ($display as &$row) $row['nation'] = l('http://nationstates.net/'. $row['nation'], n($row['nation']));
+  foreach ($display as &$row) $row['nation'] = nl($row['nation']);
   $page->title = t("Nations endorsing @a and not @b", array('@a' => n($a), '@b' => n($b)));
-  $page->content = t('There are %num nations in this set', array('%num' => count($display)));
+  $page->content = '<p>'. t('Venn diagram subsets: <ul><li>!all</li><li>!neither</li><li>!left</li><li>!right</li><li>!both</li></ul>', 
+    array(
+      '!all' => l('venn/'. $a .'/'. $b, 'all'),
+      '!neither' => l('venn/neither/'. $a .'/'. $b, 'neither'),
+      '!both' => l('venn/and/'. $a .'/'. $b, 'both'),
+      '!left' => l('venn/left/'. $a .'/'. $b, n($a) .' and not '. n($b)),
+      '!right' => l('venn/right/'. $a .'/'. $b, n($b) .' and not '. n($a)),
+    )
+  ) .'</p>';
+  $page->content .= '<p>'. t('There are %num nations in this set', array('%num' => count($display))) .'</p>';
   $page->content .= html_table($header, $display);
   return $page;  
+}
+
+function page_venn_right($a, $b) {
+  return page_venn_left($b, $a);
 }
 
 function page_venn($a, $b) {
@@ -74,6 +110,15 @@ function page_venn($a, $b) {
   }
   ksort($row);
   $page->title = t('Relations with @a or @b', array('@a' => n($a), '@b' => n($b)));
-  $page->content = html_table($header, $row);
+  $page->content = '<p>'. t('Venn diagram subsets: <ul><li>!all</li><li>!neither</li><li>!left</li><li>!right</li><li>!both</li></ul>', 
+    array(
+      '!all' => l('venn/'. $a .'/'. $b, 'all'),
+      '!neither' => l('venn/neither/'. $a .'/'. $b, 'neither'),
+      '!both' => l('venn/and/'. $a .'/'. $b, 'both'),
+      '!left' => l('venn/left/'. $a .'/'. $b, n($a) .' and not '. n($b)),
+      '!right' => l('venn/right/'. $a .'/'. $b, n($b) .' and not '. n($a)),
+    )
+  ) .'</p>';
+  $page->content .= html_table($header, $row);
   return $page;
 } 
