@@ -20,6 +20,9 @@ function n($name, $display = TRUE) {
 
 function l($path = "", $anchor = "", $attributes = array()) {
   static $valid = array('class', 'href', 'rel', 'id', 'style', 'title');
+  if ($path == $_GET['q']) {
+    return "<strong>$anchor</strong>";
+  }
   $default = array('href' => url($path));
   foreach ($valid as $attr) {
     if ($attributes[$attr]) $default[$attr] = $attributes[$attr];
@@ -56,4 +59,8 @@ function interval($seconds) {
     if ($amount) $out[] = t('%s '. $unit. ($amount > 1 ? 's' : ''), array('%s' => $amount)); 
   }
   return implode(" ", $out);
+}
+
+function flag($flag) {
+  return '<img class="flag" src="http://www.nationstates.net/images/flags/'. $flag .'" />';
 }
