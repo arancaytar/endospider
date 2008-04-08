@@ -14,6 +14,65 @@
  *					including the decimal trimming of the percentage	*
  ************************************************************************/
 
+function page_relations($nation) {
+  $outgoing = db_read(
+    'endorsement', 
+    array('receiving'), 
+    array('giving' => $nation)
+  );
+  
+  if (!is_array($outgoing)) $outgoing = $outgoing ? array($outgoing) : array();
+  
+  $incoming = db_read(
+    'endorsement', 
+    array('giving'), 
+    array('receiving' => $nation)
+  );
+  if (!is_array($returned)) $returned = $returned ? array($returned) : array();
+  
+  $header = array(
+    'nation' => t('Nation'),
+    'endorsed' => t('Is endorsed'),
+    'endorses' => t('Endorses'),
+    'returned' => t('Mutual'),
+  );
+  
+  foreach ($outgoing as $n) {
+    $rels[$n]['endorsed'] = true;
+  }
+  
+  foreach ($incoming as $n) {
+    $rels[$n]['endorses'] = true;
+  }
+  
+  ksort($rels);
+  
+  foreach ($rels as $rel => $e) {
+    $row[$rel] = array(
+      'nation' => nl($rel),
+      'endorses' => $e['endorses'] ? t('Yes') : t('No'),
+      'endorsed' => $e['endorsed'] ? t('Yes') : t('No'),
+      'returned' => ($e['endorses'] && $e['endorsed']) ? t('Yes') : t('No'),
+    );
+  }
+  
+  $mutual = array_intersect($incoming, $outgoing);
+  
+  $page->title = t('Relations with @nation', array('@nation' => n($nation)));
+  $page->content = '<p>'. t('%nation endorses %outgoing nations and is endorsed by %incoming nations. %returned of these endorsements are mutual.',
+    array(
+      '%nation' => n($nation),
+      '%outgoing' => count($outgoing),
+      '%incoming' => count($incoming),
+      '%returned' => count($mutual),
+    )
+  ) .'</p>';
+  
+  $page->content .= '<p>View <strong>all</strong>, '. l('relations/out/'. $nation, t('outgoing')) .' or '. l('relations/in/'. $nation, t('incoming')) .' endorsements only.</p>';
+  $page->content .= html_table($header, $row);
+  return $page;
+}
+ 
 function page_relations_out($nation) {
   $outgoing = db_read(
     'endorsement', 
@@ -45,7 +104,16 @@ function page_relations_out($nation) {
   }
   
   $page->title = t('Nations endorsed by @nation', array('@nation' => n($nation)));
-  $page->content = html_table($header, $row);
+    $page->content = '<p>'. t('%nation endorses %outgoing nations and is endorsed by %returned (%percent%) of these nations.',
+    array(
+      '%nation' => n($nation),
+      '%outgoing' => count($outgoing),
+      '%returned' => count($returned),
+      '%percent' => sprintf('%.2f', count($returned) * 100 / count($outgoing)),
+    )
+  ) .'</p>';
+  $page->content .= '<p>View '. l('relations/'. $nation, 'all') .', <strong>outgoing</strong> or '. l('relations/in/'. $nation, t('incoming')) .' endorsements only.</p>';
+  $page->content .= html_table($header, $row);
   return $page;
 }
 
@@ -78,6 +146,15 @@ function page_relations_in($nation) {
   }
   
   $page->title = t('Nations endorsing @nation', array('@nation' => n($nation)));
-  $page->content = html_table($header, $row);
+  $page->content = '<p>'. t('%nation is endorsed by %incoming nations and endorses %returned (%percent%) of these nations.',
+    array(
+      '%nation' => n($nation),
+      '%incoming' => count($incoming),
+      '%returned' => count($returned),
+      '%percent' => sprintf('%.2f', count($returned) * 100 / count($incoming)),
+    )
+  ) .'</p>';
+  $page->content .= '<p>View '. l('relations/'. $nation, 'all') .', '. l('relations/out/'. $nation, t('outgoing')) .' or <strong>incoming</strong> endorsements only.</p>';
+  $page->content .= html_table($header, $row);
   return $page;
 }
