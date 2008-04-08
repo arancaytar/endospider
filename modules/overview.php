@@ -16,31 +16,30 @@ function page_overview() {
   $page->title = t('Overview');
   $out = t('<p>The following regions are currently scanned.</p>');
 
-  $out = '<table border="1">
-  <tr>
-    <th>Region</th>
-    <th>Delegate</th>
-    <th>Nations</th>
-    <th>UN Nations</th>
-    <th>UN %</th>
-    <th>Last Scan</th>
-    <th>Scan Length</th>
-  </tr>
-';
+  $header = array(
+    'region' => t('Region'),
+    'delegate' => t('WA Delegate'),
+    'size' => t('Nations'),
+    'un' => t('WA Nations'),
+    'unp' => t('WA %'),
+    'scan_started' => t('Last scanned'),
+    'scan_length' => t('Scan length'),
+  );
+
   foreach ($regions as $region) {
-    $out .= "
-    <tr>
-      <td>". l('region/'. $region['region'], n($region['region'])) ."</td>
-      <td>". l('nation/'. $region['delegate'], n($region['delegate'])) ."</td>
-      <td>$region[size]</td>
-      <td>$region[un]</td>
-      <td>". sprintf('%3.2f', $region['un'] / $region['size'] * 100) ."</td>
-      <td>$region[scan_started]</td>
-      <td>$region[scan_length]</td>
-    </tr>
-      ";
+    $row[] = array(
+      'region' => rl($region['region']),
+      'delegate' => nl($region['delegate']),
+      'size' => $region['size'],
+      'un' => $region['un'],
+      'unp' => sprintf('%3.2f', $region['un'] / $region['size'] * 100),
+      'scan_started' => $region['scan_started'],
+      'scan_length' => interval($region['scan_length']),
+    );
   }
-  $out .= "</table>";
+  
+  $out .= html_table($header, $row);
+  
   $page->content = $out;
   return $page;
 }
