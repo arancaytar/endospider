@@ -5,9 +5,9 @@
 <head>
 <title>EndoSpider | <?=$title?></title>
  
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
 <!-- related documents -->
-<base href="http://<?=$_SERVER['HTTP_HOST'] . l()?>" />
+<base href="http://<?=$_SERVER['HTTP_HOST'] . url("")?>" />
 <link rel="start" href="<?=$start?>" />
 <?php if ($prev) { ?><link rel="prev"  href="<?=$prev?>" /> <?php } ?>
 <?php if ($next) { ?><link rel="next"  href="<?=$next?>" /> <?php } ?>
@@ -30,6 +30,7 @@
 <script type="text/javascript" src="style/scripts/jquery.js"></script>
 <script type="text/javascript" src="style/scripts/jquery.form.js"></script>
 <script type="text/javascript" src="style/scripts/link.js"></script>
+<script type="text/javascript" src="style/scripts/flag.js"></script>
 </head>
 
 <body>
@@ -78,5 +79,7 @@
   3.0</a> or <a href="http://www.opera.com">Opera 9.5</a>.<hr/>
 <small><em>EndoSpider was developed by Arancaytar, aka <a href="mailto:ermarian@gmail.com">Ermarian</a>.
  Visit my site at <a href="http://ermarian.net">The Ermarian Network</a>.</em></small></div>
+   <div id="nation-box"></div>
+   <div id="flag-box"><img id="flag-expand" src="" /></div>
 </body>
 </html>
