@@ -3,11 +3,12 @@
 function page_tart_new($nation) {
   $page->title = t('Which nations should @nation endorse?', array('@nation' => n($nation)));
   $region = db_read('nation', array('region'), array('nation' => $nation));
-  $all_nations = db_read('nation', array('nation', 'active'), array('region' => $region));
+  $all_nations = db_read('nation', array('nation', 'active', 'flag'), array('region' => $region));
   foreach ($all_nations as $i => $n) {
+    $data[$n['nation']] = $n;
     $all_nations[$i] = $n['nation'];
-    $active[$n['nation']] = (28 * 86400 - $n['active']) / 28 / 86400;
   }
+  
   $endorsed = db_read('endorsement', array('receiving'), array('giving' => $nation));
   $endorsing = db_read('endorsement', array('giving'), array('receiving' => $nation));
   
@@ -26,17 +27,20 @@ function page_tart_new($nation) {
     $returned[$candidate] = count($my_returned);
     $received[$candidate] = count($my_received);
     $given[$candidate] = count($my_given);
-    $score[$candidate] = ($returned[$candidate]+1) / ($received[$candidate]+1) * sqrt(($returned[$candidate]+1) / ($given[$candidate]+1)) * sqrt($active[$candidate]);
+    $active = max(0, (28 * 86400 - $data[$candidate]['active']) / 28 / 86400);
+    $score[$candidate] = ($returned[$candidate]+1) / ($received[$candidate]+1) * sqrt(($returned[$candidate]+1) / ($given[$candidate]+1)) * sqrt($active);
   }
   
   arsort($score);
   
   foreach ($score as $candidate => $my_score) {
     $rows[] = array(
-      'nation' => l("http://nationstates.net/$candidate", n($candidate)),
+      'nation' => nl($candidate),
       'given' => $given[$candidate],
       'received' => $received[$candidate],
       'returned' => sprintf('%.2f', $my_score * 100). '% ('. $returned[$candidate] .')',
+      'flag' => flag($data[$candidate]['flag']),
+      'active' => interval($data[$candidate]['active']) .' ago',
     );
   }
   
@@ -45,6 +49,8 @@ function page_tart_new($nation) {
     'given' => t('Outgoing'),
     'received' => t('Incoming'),
     'returned' => t('Rate of Return'), 
+    'flag' => t('Flag'),
+    'active' => t('Active'),
   );
   $page->content = '<p>'. t("This view takes into account the various nations' endorsement behavior and activity. The highest-ranked nations" .
   " are those that endorse everyone who endorses them, and noone else, and that were active very recently. Nations that hand out many endorsements 
