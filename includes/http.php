@@ -143,3 +143,24 @@ function http_user_agent() {
   $user_agent="EndoSpider/$version (+http://ermarian.net/downloads/php/endospider) Used on $site";
   return $user_agent;
 }
+
+function http_content_type($type = 'xhtml', $status = 200, $charset = 'utf-8') {
+  static $sent = false;
+  static $mime = array(
+    'xhtml' => 'application/xhtml+xml',
+    'rss'   => 'application/rss+xml',
+    'text'  => 'text/plain',
+    'html'  => 'text/html',
+    'png'   => 'image/png',
+    'svg'   => 'application/svg+xml',
+    'json'  => 'application/json',
+    'js'    => 'text/javascript',
+    'css'   => 'text/css',
+    'xml'   => 'application/xml',
+  );
+  if (!$sent && !$sent = headers_sent()) {
+    $sent = true;
+    if ($type == 'xhtml' && !preg_match('/application\/xhtml\+xml/', $_SERVER['HTTP_ACCEPT'])) $type = 'html';
+    header('Content-type: '. $mime[$type] .';charset='. $charset);
+  }
+}

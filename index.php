@@ -12,6 +12,7 @@ require_once "includes/json.php";
 require_once "includes/locale.php";
 require_once "includes/spider.php";
 require_once "includes/status.php";
+require_once "includes/xml.php";
 
 require_once "modules/auth.php";
 require_once "modules/banlist.php";
@@ -22,21 +23,21 @@ require_once "modules/ranking.php";
 require_once "modules/region.php";
 require_once "modules/relations.php";
 require_once "modules/signature.php";
-require_once "modules/venn.php";
 require_once "modules/tart.php";
+require_once "modules/venn.php";
+require_once "modules/xml.php";
 
 require_once "template/html.php";
 
 include_once 'config.php';
 
 function main() {
-  session_start();
   $page = alias_execute($_GET['q']);
   if (!is_object($page)) $page = (object)(array('content' => $page));
-  if (!$page->content_type) $page->content_type = 'application/xhtml+xml';
+  if (!$page->content_type) $page->content_type = 'xhtml';
   if (!$page->code) $page->code = 200;
   if (!$page->template) $page->template = 'html';
-  header("Content-type: ". $page->content_type, $page->code);
+  http_content_type($page->content_type, $page->code);
   ob_start('ob_gzhandler');
 
   if (!empty($page->template)) {
