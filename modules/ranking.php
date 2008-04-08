@@ -10,7 +10,7 @@ function page_ranking($sort, $region, $r = FALSE) {
     $last = $row['received'];
     $j = $row['rank'];
     $row['nation'] = nl($row['nation']);
-    $row['flag'] = '<img src="http://www.nationstates.net/images/flags/'. $row['flag'] .'" width="32" height="24" />';
+    $row['flag'] = flag($row['flag']);
     $rows[] = $row;
   }
   $header = array(
