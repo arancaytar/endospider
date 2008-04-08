@@ -141,4 +141,29 @@ label {
 
 #nation-box {
   display:none;
+  background-color:#021560;
+  border:1px solid #3783c9;
+  padding:5px;
+  position:absolute;
+  font-size:9pt;
+}
+
+#nation-box ul,
+#nation-box li {
+  list-style:none;
+  padding:1px;
+}
+
+img.flag {
+  height:24px;
+  width:36px;
+  border:1px solid #3783c9;
+}
+
+#flag-box {
+  display:none;
+  background-color:#021560;
+  border:1px solid #3783c9;
+  padding:5px;
+  position:absolute;
 }
