@@ -1,11 +1,12 @@
 <?php
 
 function page_gather() {
+  file_put_contents('/tmp/endostatus', '');
 	if (!auth()) return page_auth_login();
   
   $page->title = t('Gathering data');
   
-  $page->content = "<p>The region entered will be scanned completely and saved in the database. The name must be entered in raw format, ie. 'my_region' rather than 'My Region'.
+  $page->content = "<p>The region entered will be scanned completely and saved in the database. 
   <strong>Caution:</strong> The scanner's database model is static and can only save one state of a region. Before beginning the scan, all previous data will be discarded irreversibly.</p>";
   
   $page->content .= form('gather');
@@ -24,12 +25,24 @@ function page_gather() {
 } 
 
 function page_gather_status() {
-  $page->content_type = 'application/json';
-  $status = array('done' => $_SESSION['done'], 'time' => interval($_SESSION['time']));
+  $page->content_type = 'json';
   $page->template = 'none';
-  $page->content = json($status);
+  $page->content = file_get_contents('/tmp/endostatus');
   return $page;  
 }
+/*
+function interval($time) {
+  $seconds = $time % 60;
+  $time = ($time - $seconds) / 60;
+  $minutes = $time % 60;
+  $time = ($time - $minutes) / 60;
+  $hours = $time;
+  $out = array();
+  if ($hours) $out[] = "$hours hour". ($hours > 1) ? 's' : '';
+  if ($minutes) $out[] = "$minutes minute". ($minutes > 1) ? 's' : '';
+  if ($seconds) $out[] = "$seconds second". ($second > 1) ? 's' : '';
+  return implode(" ", $out);
+}*/
 
 function form_gather() {
   $form['region'] = array(
@@ -55,6 +68,7 @@ function form_gather_submit($values) {
   $_SESSION['ajax'] = $values['ajax'];
 
   $region = $values['region'];
+  $region = n($region, false);
   db_query('DELETE FROM {region} WHERE region="%s"', $region);
   db_query('DELETE FROM {nation} WHERE region="%s"', $region);
   db_query('DELETE FROM {endorsement} WHERE region="%s"', $region);
@@ -72,8 +86,9 @@ function gather_index($region) {
   status(t('There are @n nations in region; @del is delegate.',
     array('@n' => $meta['size'], '@del' => $meta['delegate'])));
   status(t('Writing meta info to database...'));
+  $meta['scan_started'] = $meta['scanned'];
   db_write('region', $region, $meta, DB_REPLACE);
-  status(t('Now indexing UN nations in region...'));
+  status(t('Now indexing WA nations in region...'));
   $un = 0;
   for ($i = 0; $i < $meta['size']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
@@ -85,7 +100,7 @@ function gather_index($region) {
     $requests++;
     $running = status(t('  Downloaded.'));
     if (count($nations)) {
-      status(t('    Found !un UN nations: ', array('!un' => count($nations))) . implode(', ', $nations));
+      status(t('    Found !un WA nations: ', array('!un' => count($nations))) . implode(', ', $nations));
       status(t('    Writing nations to database...'));
       db_write('nation', $nations, array('region' => $region, 'indexed' => date('Y-m-d H:i:s')), DB_REPLACE);
     }
@@ -98,7 +113,7 @@ function gather_index($region) {
 
 function gather_scan($region) {
   $start = status(t("Beginning scan of $region, stage 2 of 2..."));
-  status(t("Retrieving UN nations from database..."));
+  status(t("Retrieving WA nations from database..."));
   $nations = db_read('nation', array('nation'), array('region' => $region));
   $requests = 0;
   status(t("There are ". count($nations) . " UN nations in this region..."));
@@ -112,15 +127,14 @@ function gather_scan($region) {
     
     if ($nation_data['region'] == $region) {
       status(t('    Writing '. count($nation_data['endorsements']) .' to database...'));
-      db_write(
-        'nation', 
-        $nation, 
+      db_write('nation', $nation, 
         array(
           'received' => count($nation_data['endorsements']), 
           'active' => $nation_data['active'], 
           'scanned' => date('Y-m-d H:i:s'), 
           'flag' => $nation_data['flag'],
           'influence' => $nation_data['influence'],
+          'motto' => $nation_data['motto']
         ), 
         DB_UPDATE
       );

@@ -26,18 +26,25 @@ function status($message) {
   $since_last = $current - $last;
   $since_begin = $current - $start;
  
-  if (!$_SESSION['ajax']) {
+  //if (!$_SESSION['ajax']) {
     print "$since_begin\t\t$message\n";
     flush();
-  }
+  //}
   
   $last = $current;
   return $since_begin;
 }
 
-function progress($done, $time) {
-  $_SESSION['done'] = (int)($done * 100);
-  $_SESSION['time'] = (int)$time;
+function progress($done, $remaining) {
+  static $time;
+  if (!$time) $time = time();
+  if (time() - $time < 2) return; // only once per two seconds please.
+  $time = time();
+  
+  $d['done'] = (int)($done * 100);
+  $d['remaining'] = (int)$remaining;
+  
+  file_put_contents('/tmp/endostatus', json($d));
 }
 
 function get_region_status($region) {
