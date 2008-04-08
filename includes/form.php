@@ -6,7 +6,7 @@ function form($id) {
     $input = form_check_input($form, $_POST);
     $return = form_execute($id, $input);
     if (!headers_sent() && $return) {
-      header("Location: ". l($return), 303);
+      header("Location: ". url($return), 303);
       exit;
     }
   }
