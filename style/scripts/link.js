@@ -1,17 +1,20 @@
 var venn = "";
 
 $(document).ready(function() {
-  $.html('<div id="nation-box"></div>');
   $('a[rel=nation-link]').click(function(e) {
-    var nation = $(this).attr('class').substr(4);
+    var nation = $(this).attr('class').substr(5);
     $('#nation-box').css('top', e.pageY).css('left', e.pageX)
     .html(
+'<strong>' + $(this).html() + '</strong><br />' +
 '<ul>'+
-'  <li><a href="http://www.nationstates.net/' + nation + '">View on NationStates</a></li>'+
-'  <li><a href="relations/out/' + nation + '">Endorsements given out</a></li>'+
-'  <li><a href="relations/in/' + nation + '">Endorsements received</a></li>'+
-'  <li><a href="javascript:" id="vennlink">Add to Venn Diagram</a>'+
+'  <li><a class="nation-link-type" href="http://www.nationstates.net/' + nation + '">NationStates Spotlight</a></li>'+
+'  <li><a class="nation-link-type" href="relations/' + nation + '">All Relations</a></li>'+
+'  <li><a class="nation-link-type" href="javascript:" id="vennlink">Add to Venn Diagram</a></li>'+
+'  <li><a class="nation-link-type" href="tart/new/' + nation + '">Tart for this nation</a></li>'+
 '</ul>');
+    $('.nation-link-type').click(function() {
+      $('#nation-box').fadeOut(500);
+    });
     if (venn) {
       $('#vennlink').click(function(e){
       document.location = $('base').attr('href') + '/venn/' + venn + '/' + nation;
@@ -24,5 +27,14 @@ $(document).ready(function() {
       });
     }
     $('#nation-box').fadeIn(500);
+    setTimeout(hideBox, 5000);
+    return false;
+  });
+  $('a[rel=nation-link]').dblclick(function(e) {
+     document.location = $(this).attr('href'); 
   });
 });
+
+function hideBox() {
+  $('#nation-box').fadeOut(500);
+}

@@ -21,14 +21,15 @@ function statusRefresh() {
   var newDone;
   $.getJSON("/services/endospider-head/gather/status", function(json) {
     newDone = json.done;
+    alert(json.done);
     if (newDone != done) {
       $('#status-progress-done').animate({
       width:(newDone+'%')}, 250);
       done = newDone;
     }
-    $('#status-time-remaining').html(remaining);
+    $('#status-time-remaining').html(json.remaining);
     if (done != 100) {
-      setTimeout(statusRefresh, 500);
+      setTimeout(statusRefresh, 2000);
     }
   });
 }
@@ -42,8 +43,8 @@ function launchTimer() {
 
 function refreshTimer() {
   var currentTime = Math.floor(((new Date()).getTime() - startTime) / 1000);
-  minutes = Math.floor(currentTime / 60);
-  seconds = Math.floor(currentTime % 60);
+  var minutes = Math.floor(currentTime / 60);
+  var seconds = Math.floor(currentTime % 60);
   if (seconds < 10) seconds = "0" + seconds;
   $('#status-time-passed').html(minutes + ":" + seconds);
   setTimeout(refreshTimer, 500);

@@ -38,6 +38,10 @@ function nl($nation) {
   return l('http://nationstates.net/'. $nation, n($nation), array('rel' => 'nation-link', 'class' => 'link-'. $nation));
 }
 
+function rl($region) {
+  return l('region/'. $region, n($region), array('rel' => 'region-link', 'class' => 'link-'. $region));
+}
+
 function url($path) {
   if (preg_match('/^[a-z]+:\/\//', $path)) return $path; // absolute
   static $url = "";
