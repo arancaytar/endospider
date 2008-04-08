@@ -6,9 +6,21 @@ function page_venn_and($a, $b) {
   
   $display = array_intersect($set_a, $set_b);
   sort($display);
-  $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
-  $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  foreach ($display as &$row) $row['nation'] = nl($row['nation']);
+  $header = array(
+    'nation' => t('Nation'), 
+    'received' => t('Received'), 
+    'given' => t('Given'),
+    'flag' => t('Flag'), 
+    'influence' => t('Influence'),
+    'active' => t('Last active')
+  );
+
+  $display = db_read('nation', array('nation', 'received', 'flag', 'influence', 'given', 'active'), array('nation' => $display));
+  foreach ($display as &$row) {
+    $row['nation'] = nl($row['nation']);
+    $row['flag'] = flag($row['flag']);
+    $row['active'] = interval($row['active']) .' ago';
+  }
   $page->title = t("Nations endorsing @a and @b", array('@a' => n($a), '@b' => n($b)));
   $page->content = '<p>'. t('Venn diagram subsets: <ul><li>!all</li><li>!neither</li><li>!left</li><li>!right</li><li>!both</li></ul>', 
     array(
@@ -37,7 +49,7 @@ function page_venn_neither($a, $b) {
   $display = db_read('nation', array('nation', 'received', 'flag', 'influence', 'given', 'active'), array('nation' => $display));
   foreach ($display as &$row) {
     $row['nation'] = nl($row['nation']);
-    $row['image'] = flag($row['flag']);
+    $row['flag'] = flag($row['flag']);
     $row['active'] = interval($row['active']) .' ago';
   }
   $page->title = t("Nations endorsing neither @a nor @b", array('@a' => n($a), '@b' => n($b)));
@@ -51,8 +63,14 @@ function page_venn_neither($a, $b) {
     )
   ) .'</p>';
   $page->content .= '<p>'. t('There are %num nations in this set', array('%num' => count($display))) .'</p>';
-  $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'), 'flag' => t('Flag'), 'influence' => t('Influence'), 'given' => t('Given'),
-    'active' => t('Last active'));
+  $header = array(
+    'nation' => t('Nation'), 
+    'received' => t('Received'), 
+    'given' => t('Given'),
+    'flag' => t('Flag'), 
+    'influence' => t('Influence'),
+    'active' => t('Last active')
+  );
   $page->content .= html_table($header, $display);
   return $page;
 }
@@ -61,10 +79,23 @@ function page_venn_left($a, $b) {
   $set_a = db_read('endorsement', array('giving'), array('receiving' => $a));
   $set_b = db_read('endorsement', array('giving'), array('receiving' => $b));
   $display = array_diff($set_a, $set_b);
-  $header = array('nation' => t('Nation'), 'received' => t('Endorsements received'));
+  $header = array(
+    'nation' => t('Nation'), 
+    'received' => t('Received'), 
+    'given' => t('Given'),
+    'flag' => t('Flag'), 
+    'influence' => t('Influence'),
+    'active' => t('Last active')
+  );
+       
   sort($display);
-  $display = db_read('nation', array('nation', 'received'), array('nation' => $display));
-  foreach ($display as &$row) $row['nation'] = nl($row['nation']);
+  $display = db_read('nation', array('nation', 'received', 'flag', 'influence', 'given', 'active'), array('nation' => $display));
+  foreach ($display as &$row) {
+    $row['nation'] = nl($row['nation']);
+    $row['flag'] = flag($row['flag']);
+    $row['active'] = interval($row['active']) .' ago';
+  }
+
   $page->title = t("Nations endorsing @a and not @b", array('@a' => n($a), '@b' => n($b)));
   $page->content = '<p>'. t('Venn diagram subsets: <ul><li>!all</li><li>!neither</li><li>!left</li><li>!right</li><li>!both</li></ul>', 
     array(
