@@ -11,7 +11,10 @@ function page_overview() {
           GROUP BY `r`.`region`
           ORDER BY `r`.`region`';
   $res = db_query($sql);
-  while ($row = db_fetch_array($res)) $regions[] = $row;
+  while ($row = db_fetch_array($res)) {
+    if ($row['scan_length'] < 0) $row['scan_length'] = time() - strtotime($row['scan_started']);
+    $regions[] = $row;
+  }
   
   $page->title = t('Overview');
   $out = t('<p>The following regions are currently scanned.</p>');
