@@ -51,10 +51,11 @@ function spider_nation_stack_($nation = false) {
 function spider_nation($nation_name) {
   $response = http("http://www.nationstates.net/page=display_nation/nation=$nation_name");
   if (!preg_match('/src="\/images\/smalleyelogo\.jpg"/', $response->data)) return false;
+  if (preg_match('%<title>NationStates | Not Found</title>%', $response->data)) return false;
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   
   $nation['un'] = preg_match('/_member/', $response->data);
-  
+
   $nation['region'] = $match[1];
   
   if (preg_match('/<img class="bigflag"[^a-z]+src="\/images\/flags\/(.+)"/', $response->data, $match)) {
@@ -66,7 +67,7 @@ function spider_nation($nation_name) {
   }
 
   if (preg_match('/population of ([0-9\.]+) ((b|m)illion)/', $response->data, $match)) {
-    $nation['population'] = preg_replace('/[^0-9]/', '', $match[1]) * ($match[2] == 'billion' ? 1000 : 1);
+    $nation['population'] = preg_replace('/[^0-9]/', '', $match[1]); // * ($match[2] == 'billion' ? 1000 : 1);
   }
   
   if (preg_match('/<p style="font-size:8pt"><strong>Most Recent Government Activity:<\/strong>[^0-9a-z]*([0-9]+) (day|hour|minute)s? ago<\/p>/', $response->data, $match)) {
@@ -82,7 +83,8 @@ function spider_nation($nation_name) {
   }
   else $nation['active'] = 0;
   
-  preg_match('/<h4>Regional Influence: <span style="font-weight: normal">(.+?)<\/span><\/h4>/', $response->data, $match);
+  #preg_match('/<h4>Regional Influence: <span style="font-weight: normal">(.+?)<\/span><\/h4>/', $response->data, $match);
+  preg_match('%<p><strong>Regional Influence:</strong> (.*?)</p>%', $response->data, $match);
   $nation['influence'] = $match[1];
   
   preg_match('/Endorsements Received: ([0-9]*) \((.*?)\)/', $response->data, $match);
