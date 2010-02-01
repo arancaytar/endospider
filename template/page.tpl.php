@@ -29,8 +29,10 @@
       href="style/print.css" />
 <script type="text/javascript" src="style/scripts/jquery.js"></script>
 <script type="text/javascript" src="style/scripts/jquery.form.js"></script>
-<script type="text/javascript" src="style/scripts/link.js"></script>
+
 <script type="text/javascript" src="style/scripts/flag.js"></script>
+<script type="text/javascript" src="style/scripts/link.js"></script>
+<script type="text/javascript" src="style/scripts/status.js"></script>
 </head>
 
 <body>
