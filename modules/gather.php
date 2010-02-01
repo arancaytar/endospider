@@ -12,7 +12,6 @@ function page_gather() {
   $page->content .= form('gather');
   $page->content .= '
   <link rel="stylesheet" type="text/css" href="style/status.css" />
-  <script type="text/javascript" src="style/scripts/status.js" />
   <div id="status-wrapper">
     <div id="status-progress">
       <div id="status-progress-done"></div>
@@ -134,7 +133,8 @@ function gather_scan($region) {
           'scanned' => date('Y-m-d H:i:s'), 
           'flag' => $nation_data['flag'],
           'influence' => $nation_data['influence'],
-          'motto' => $nation_data['motto']
+          'motto' => $nation_data['motto'],
+          'population' => $nation_data['population'],
         ), 
         DB_UPDATE
       );
