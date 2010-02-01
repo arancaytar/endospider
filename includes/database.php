@@ -74,14 +74,14 @@ function db_read($record, $fields, $criteria) {
   $sql .= "WHERE ". implode(" AND ", $c);
   $result = db_query($sql);
   while ($row = db_fetch_array($result)) $rows[] = $row;
-  return count($rows) > 1 ? $rows : $rows[0];
+  if (isset($rows)) return count($rows) > 1 ? $rows : $rows[0];
 }
 
 function db_schema($record = NULL) {
   static $schema = array(
     'nation' => array(
       'fields' => array(
-        'nation', 'region', 'received', 'given', 'indexed', 'scanned', 'active', 'flag', 'influence'
+        'nation', 'region', 'received', 'given', 'indexed', 'scanned', 'active', 'flag', 'influence', 'population',
       ),
       'key' => 'nation',
     ),
