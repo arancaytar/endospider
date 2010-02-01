@@ -32,11 +32,11 @@ require_once "template/html.php";
 include_once 'config.php';
 
 function main() {
-  $page = alias_execute($_GET['q']);
+  $page = alias_execute(isset($_GET['q']) ? $_GET['q'] : '');
   if (!is_object($page)) $page = (object)(array('content' => $page));
-  if (!$page->content_type) $page->content_type = 'xhtml';
-  if (!$page->code) $page->code = 200;
-  if (!$page->template) $page->template = 'html';
+  if (empty($page->content_type)) $page->content_type = 'xhtml';
+  if (empty($page->code)) $page->code = 200;
+  if (empty($page->template)) $page->template = 'html';
   http_content_type($page->content_type, $page->code);
   ob_start('ob_gzhandler');
 

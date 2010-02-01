@@ -28,13 +28,21 @@ function page_relations($nation) {
     array('giving'), 
     array('receiving' => $nation)
   );
-  if (!is_array($returned)) $returned = $returned ? array($returned) : array();
+  if (!is_array($incoming)) $incoming = $incoming ? array($incoming) : array();
+  
+  $nations = db_read('nation', array('nation', 'flag', 'active'), array('nation' => array_merge($incoming, $outgoing)));
+  
+  foreach ($nations as $data) {
+    $nations[$data['nation']] = $data;
+  }
   
   $header = array(
     'nation' => t('Nation'),
     'endorsed' => t('Is endorsed'),
     'endorses' => t('Endorses'),
     'returned' => t('Mutual'),
+    'flag' => t('Flag'),
+    'active' => t('Last active'),
   );
   
   foreach ($outgoing as $n) {
@@ -50,18 +58,20 @@ function page_relations($nation) {
   foreach ($rels as $rel => $e) {
     $row[$rel] = array(
       'nation' => nl($rel),
-      'endorses' => $e['endorses'] ? t('Yes') : t('No'),
-      'endorsed' => $e['endorsed'] ? t('Yes') : t('No'),
-      'returned' => ($e['endorses'] && $e['endorsed']) ? t('Yes') : t('No'),
+      'endorses' => !empty($e['endorses']) ? t('Yes') : t('No'),
+      'endorsed' => !empty($e['endorsed']) ? t('Yes') : t('No'),
+      'returned' => (!empty($e['endorses']) && !empty($e['endorsed'])) ? t('Yes') : t('No'),
+      'flag'     => flag($nations[$rel]['flag']),
+      'active'   => interval($nations[$rel]['active']),
     );
   }
   
   $mutual = array_intersect($incoming, $outgoing);
   
   $page->title = t('Relations with @nation', array('@nation' => n($nation)));
-  $page->content = '<p>'. t('%nation endorses %outgoing nations and is endorsed by %incoming nations. %returned of these endorsements are mutual.',
+  $page->content = '<p>'. t('!nation endorses %outgoing nations and is endorsed by %incoming nations. %returned of these endorsements are mutual.',
     array(
-      '%nation' => n($nation),
+      '!nation' => nl($nation),
       '%outgoing' => count($outgoing),
       '%incoming' => count($incoming),
       '%returned' => count($mutual),
@@ -87,15 +97,25 @@ function page_relations_out($nation) {
   );
   if (!is_array($returned)) $returned = $returned ? array($returned) : array();
   
+  $nations = db_read('nation', array('nation', 'flag', 'active'), array('nation' => $outgoing));
+  
+  foreach ($nations as $data) {
+    $nations[$data['nation']] = $data;
+  }
+  
   $header = array(
     'nation' => t('Nation'),
     'returned' => t('Returned'),
+    'flag' => t('Flag'),
+    'active' => t('Last active'),
   );
   
   foreach ($outgoing as $out) {
     $row[$out] = array(
       'nation' => nl($out),
       'returned' => t('No'),
+      'flag'     => flag($nations[$out]['flag']),
+      'active'   => interval($nations[$out]['active']),
     );
   }
   
@@ -104,9 +124,9 @@ function page_relations_out($nation) {
   }
   
   $page->title = t('Nations endorsed by @nation', array('@nation' => n($nation)));
-    $page->content = '<p>'. t('%nation endorses %outgoing nations and is endorsed by %returned (%percent%) of these nations.',
+    $page->content = '<p>'. t('!nation endorses %outgoing nations and is endorsed by %returned (%percent%) of these nations.',
     array(
-      '%nation' => n($nation),
+      '!nation' => nl($nation),
       '%outgoing' => count($outgoing),
       '%returned' => count($returned),
       '%percent' => sprintf('%.2f', count($returned) * 100 / count($outgoing)),
@@ -132,12 +152,22 @@ function page_relations_in($nation) {
   $header = array(
     'nation' => t('Nation'),
     'returned' => t('Returned'),
+    'flag' => t('Flag'),
+    'active' => t('Last active'),
   );
+  
+  $nations = db_read('nation', array('nation', 'flag', 'active'), array('nation' => $incoming ));
+  
+  foreach ($nations as $data) {
+    $nations[$data['nation']] = $data;
+  }
   
   foreach ($incoming as $in) {
     $row[$in] = array(
       'nation' => nl($in),
       'returned' => t('No'),
+      'flag'     => flag($nations[$in]['flag']),
+      'active'   => interval($nations[$in]['active']),
     );
   }
   
@@ -146,9 +176,9 @@ function page_relations_in($nation) {
   }
   
   $page->title = t('Nations endorsing @nation', array('@nation' => n($nation)));
-  $page->content = '<p>'. t('%nation is endorsed by %incoming nations and endorses %returned (%percent%) of these nations.',
+  $page->content = '<p>'. t('!nation is endorsed by %incoming nations and endorses %returned (%percent%) of these nations.',
     array(
-      '%nation' => n($nation),
+      '!nation' => nl($nation),
       '%incoming' => count($incoming),
       '%returned' => count($returned),
       '%percent' => sprintf('%.2f', count($returned) * 100 / count($incoming)),

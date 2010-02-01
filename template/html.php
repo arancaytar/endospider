@@ -32,8 +32,10 @@ function main_menu($url) {
 }
 
 function template_html($page) {
+  $defaults = array('title' => '', 'start' => '', 'prev' => '', 'next' => '');
+  foreach ($defaults as $var => $val) $$var = $val;
 	foreach ($page as $var => $val) $$var = $val;
-  $menu = main_menu($_GET['q']);
+  $menu = main_menu(isset($_GET['q']) ? $_GET['q'] : '');
   $messages = message();
 	include_once('template/page.tpl.php');
 } 
@@ -57,9 +59,10 @@ function html_table($header, $rows) {
 }
 
 function html_table_header_($header) {
+  $out = '';
   foreach ($header as $cell) {
     if (!is_array($cell)) $cell = array('data' => $cell);
-    $out .= '<th class="'. $cell['class'] .'">'. $cell['data'] .'</th>';
+    $out .= '<th class="'. (isset($cell['class']) ? $cell['class'] : '') .'">'. $cell['data'] .'</th>';
   }
   return $out;
 }

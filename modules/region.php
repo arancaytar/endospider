@@ -22,7 +22,7 @@ function page_region($region) {
     '%un' => sprintf('%.2f', 100 * $un / $r['size']),
     '%endo' => sprintf('%.2f', 100 * $endo / $un / ($un - 1)),
     '%security' => sprintf('%.2f', 100 * $delegate / $un),
-    '%power' => sprintf('%.2f', 100 * ($delegate - $vice) / $delegate),
+    '%power' => ($delegate && $vice) ? sprintf('%.2f', 100 * ($delegate - $vice) / $delegate) : 'DATA UNAVAILABLE',
   ));
   
   $res = db_query('SELECT `nation`, `received`, COUNT(*) AS `given` FROM {nation} `n` JOIN {endorsement} `e` ON `nation` = `giving` 
