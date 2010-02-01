@@ -1,33 +1,38 @@
 <?php
 
+define('SIG_REGION', 'the_north_pacific');
+define('SIG_ELECT', 'new_kervoskia');
+require_once 'includes/string.php';
 function page_signature() {
-  $db = db_read('nation', array('nation', 'received', 'scanned'), array('nation' => array('great_bights_mum', 'lewis_and_clark')));
+  $delegate = db_read('region', array('delegate'), array('region' => SIG_REGION));
+  $db = db_read('nation', array('nation', 'received', 'scanned'), array('nation' => array($delegate, SIG_ELECT)));
   $scan = time() - strtotime($db[0]['scanned']);
   if ($scan > 3600) {
-    $gb = spider_nation('great_bights_mum');
-    $lc = spider_nation('lewis_and_clark');
-    db_write('nation', 'great_bights_mum', array('received' => count($gb['endorsements']), 'scanned' => date("Y-m-d H:i:s")), DB_UPDATE);
-    db_write('nation', 'lewis_and_clark', array('received' => count($lc['endorsements']), 'scanned' => date("Y-m-d H:i:s")), DB_UPDATE);
-    $db = db_read('nation', array('nation', 'received', 'scanned'), array('nation' => array('great_bights_mum', 'lewis_and_clark')));
+    $gb = spider_nation($delegate);
+    $lc = spider_nation(SIG_ELECT);
+    db_write('nation', $delegate, array('received' => count($gb['endorsements']), 'scanned' => date("Y-m-d H:i:s")), DB_UPDATE);
+    db_write('nation', SIG_ELECT, array('received' => count($lc['endorsements']), 'scanned' => date("Y-m-d H:i:s")), DB_UPDATE);
+    $db = db_read('nation', array('nation', 'received', 'scanned'), array('nation' => array($delegate, SIG_ELECT)));
     $scan = 0;
   }
   
   $nations[$db[0]['nation']] = $db[0]['received'];
   $nations[$db[1]['nation']] = $db[1]['received'];
-  $total = $nations['great_bights_mum'] + $nations['lewis_and_clark'];
+  #var_dump($nations);
+  $total = $nations[$delegate] + $nations[SIG_ELECT];
   $im = imagecreate(468, 60);
   imagefilledrectangle(
     $im, 0, 0, 
-    ceil($nations['great_bights_mum'] / $total * 468), 
+    ceil($nations[$delegate] / $total * 468), 
     60, imagecolorallocate($im, 0, 0, 255)
   );
-  imagefilledrectangle($im, 468 - ceil($nations['lewis_and_clark'] / $total * 468), 0, 468, 60, imagecolorallocate($im, 255, 0, 0));
+  imagefilledrectangle($im, 468 - ceil($nations[$delegate] / $total * 468), 0, 468, 60, imagecolorallocate($im, 255, 0, 0));
   imagestring($im, 3, 5, 5, 'Scanned '. strip_tags(interval($scan)) .' ago', imagecolorallocate($im, 240, 220, 0));
-  imagestring($im, 5, ceil($nations['great_bights_mum'] / $total * 234), 20, $nations['great_bights_mum'], imagecolorallocate($im, 255, 255, 255));
-  imagestring($im, 5, 234 + ceil($nations['lewis_and_clark'] / $total * 234), 20, $nations['lewis_and_clark'], imagecolorallocate($im, 0, 0, 0));
-  imagestring($im, 5, ceil($nations['great_bights_mum'] / $total * 468), 20, $nations['lewis_and_clark'] - $nations['great_bights_mum'], imagecolorallocate($im, 240, 220, 0));
-  imagestring($im, 4, 10, 40, 'Great Bights Mum', imagecolorallocate($im, 255, 255, 255));
-  imagestring($im, 4, 350, 40, 'Lewis & Clark', imagecolorallocate($im, 0, 0, 0));
+  imagestring($im, 5, ceil($nations[SIG_ELECT] / $total * 234), 20, $nations[SIG_ELECT], imagecolorallocate($im, 255, 255, 255));
+  imagestring($im, 5, 234 + ceil($nations[$delegate] / $total * 234), 20, $nations[$delegate], imagecolorallocate($im, 0, 0, 0));
+  imagestring($im, 5, ceil($nations[SIG_ELECT] / $total * 468), 20, $nations[$delegate] - $nations[SIG_ELECT], imagecolorallocate($im, 240, 220, 0));
+  imagestring($im, 3, 10, 40, url_to_display(SIG_ELECT) . ' (elect)', imagecolorallocate($im, 255, 255, 255));
+  imagestring($im, 3, 250, 40, url_to_display($delegate) . ' (incumbent)', imagecolorallocate($im, 0, 0, 0));
   ob_start();
   imagepng($im);
   $out = ob_get_clean();
