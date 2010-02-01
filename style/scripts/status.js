@@ -9,7 +9,7 @@ $(document).ready(function() {
     success:function() {
       $('input').attr('readonly', '');
       $('#status-wrapper').fadeOut(1000);
-      document.location = "/services/endospider-head/";
+      document.location = "/services/endospider/";
     }
   });
   $('#ajax').attr('value', '1');
@@ -19,9 +19,9 @@ function statusRefresh() {
   var done;
   var remaining;
   var newDone;
-  $.getJSON("/services/endospider-head/gather/status", function(json) {
+  $.getJSON("/services/endospider/gather/status", function(json) {
+    alert("RETURNED");
     newDone = json.done;
-    alert(json.done);
     if (newDone != done) {
       $('#status-progress-done').animate({
       width:(newDone+'%')}, 250);
