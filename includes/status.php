@@ -2,7 +2,7 @@
 
 function message($message = NULL) {
   static $messages = array();
-  if (!$messages && $_COOKIE['endospider_messages']) $messages = explode("\n\n", $_COOKIE['endospider_messages']);
+  if (!$messages && isset($_COOKIE['endospider_messages'])) $messages = explode("\n\n", $_COOKIE['endospider_messages']);
   if ($message) {
     $messages[] = $message;
   }

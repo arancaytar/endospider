@@ -20,12 +20,12 @@ function n($name, $display = TRUE) {
 
 function l($path = "", $anchor = "", $attributes = array()) {
   static $valid = array('class', 'href', 'rel', 'id', 'style', 'title');
-  if ($path == $_GET['q']) {
+  if (isset($_GET['q']) && $path == $_GET['q']) {
     return "<strong>$anchor</strong>";
   }
   $default = array('href' => url($path));
   foreach ($valid as $attr) {
-    if ($attributes[$attr]) $default[$attr] = $attributes[$attr];
+    if (isset($attributes[$attr])) $default[$attr] = $attributes[$attr];
   } 
   if (!$anchor) return $default['href'];
   foreach ($default as $attr => $value) {

@@ -24,7 +24,7 @@ function form_build($id) {
 
 function form_check_input($form, $post) {
   foreach (array_keys($form) as $field) {
-    $filtered[$field] = $post[$field];
+    $filtered[$field] = isset($post[$field]) ? $post[$field] : '';
   }
   return $filtered;
 }
@@ -46,7 +46,7 @@ function form_render_($form, $prefix = array(), $root = '') {
   $prefix[] = $root;
   foreach (form_children($form) as $id => $field) {
     $render = form_render_field($field, $id, $prefix);
-    $out .= $render[0] . form_render_(form_children($field), $prefix, $id) . $render[1];
+    $out .= $render[0] . form_render_(form_children($field), $prefix, $id) . (isset($render[1]) ? $render[1] : '');
   }
   return $out;
 }
