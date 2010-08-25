@@ -1,4 +1,13 @@
 var venn = "";
+function i2d(name) {
+  return ucwords(name.replace('_', ' '));
+}
+
+function ucwords(str) {
+  return (str + '').replace(/^(.)|\s(.)/g, function ($1) {
+    return $1.toUpperCase();
+  });
+}
 
 $(document).ready(function() {
   $('a[rel=nation-link]').click(function(e) {
@@ -19,7 +28,7 @@ $(document).ready(function() {
       $('#vennlink').click(function(e){
       document.location = $('base').attr('href') + '/venn/' + venn + '/' + nation;
       });
-      $('#vennlink').html("Venn diagram with " + venn);
+      $('#vennlink').html("Venn diagram with <strong><em>" + i2d(venn) + "</em></strong>");
     }
     else {
       $('#vennlink').click(function(e){
