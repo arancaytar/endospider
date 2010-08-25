@@ -19,7 +19,12 @@ function db_write($type, $key, $attributes, $action = DB_INSERT) {
         $record = is_array($schema['key']) ? $id + $attributes : array($schema['key'] => $id) + $attributes;
         $cols = array();
         foreach ($schema['fields'] as $field) {
-          $cols[] = "'". db_string($record[$field]) ."'";
+          if (isset($record[$field])) {
+            $cols[] = "'". db_string($record[$field]) ."'";
+          }
+          else {
+            $cols[] = "''";
+          }
         }
         $records[] = "(". implode(", ", $cols) .")";
       }
