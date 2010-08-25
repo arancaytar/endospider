@@ -1,7 +1,9 @@
 <?php
 
 define('SIG_REGION', 'the_north_pacific');
-define('SIG_ELECT', 'new_kervoskia');
+define('SIG_ELECT', 'ermarian');
+define('SIG_I_LABEL', 'usurper');
+define('SIG_E_LABEL', 'defender');
 require_once 'includes/string.php';
 function page_signature() {
   $delegate = db_read('region', array('delegate'), array('region' => SIG_REGION));
@@ -31,8 +33,8 @@ function page_signature() {
   imagestring($im, 5, ceil($nations[SIG_ELECT] / $total * 234), 20, $nations[SIG_ELECT], imagecolorallocate($im, 255, 255, 255));
   imagestring($im, 5, 234 + ceil($nations[$delegate] / $total * 234), 20, $nations[$delegate], imagecolorallocate($im, 0, 0, 0));
   imagestring($im, 5, ceil($nations[SIG_ELECT] / $total * 468), 20, $nations[$delegate] - $nations[SIG_ELECT], imagecolorallocate($im, 240, 220, 0));
-  imagestring($im, 3, 10, 40, url_to_display(SIG_ELECT) . ' (elect)', imagecolorallocate($im, 255, 255, 255));
-  imagestring($im, 3, 250, 40, url_to_display($delegate) . ' (incumbent)', imagecolorallocate($im, 0, 0, 0));
+  imagestring($im, 3, 10, 40, url_to_display(SIG_ELECT) . ' (' . SIG_E_LABEL . ')', imagecolorallocate($im, 255, 255, 255));
+  imagestring($im, 3, 250, 40, url_to_display($delegate) . ' (' . SIG_I_LABEL . ')', imagecolorallocate($im, 0, 0, 0));
   ob_start();
   imagepng($im);
   $out = ob_get_clean();
