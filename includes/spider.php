@@ -49,20 +49,19 @@ function spider_nation_stack_($nation = false) {
 }
 
 function spider_nation($nation_name) {
+  print "'http://www.nationstates.net/page=display_nation/nation=$nation_name'\n";
   $response = http("http://www.nationstates.net/page=display_nation/nation=$nation_name");
   if (!preg_match('/src="\/images\/smalleyelogo\.jpg"/', $response->data)) return false;
-  if (preg_match('%<title>NationStates | Not Found</title>%', $response->data)) return false;
+  if (preg_match('%<title>NationStates \| Not Found</title>%', $response->data)) return false;
   preg_match('/region=([a-z0-9_\-]*)"/', $response->data, $match);
   
   $nation['un'] = preg_match('/_member/', $response->data);
 
   $nation['region'] = $match[1];
-  
   if (preg_match('/<img class="bigflag"[^a-z]+src="\/images\/flags\/(.+)"/', $response->data, $match)) {
     $nation['flag'] = $match[1];
   }
-  
-  if (preg_match('/<strong>"(.*?)"<\/strong>/', $response->data, $match)) {
+  if (preg_match('/&ldquo;(.*?)&rdquo;/', $response->data, $match)) {
     $nation['motto'] = $match[1];
   }
 
