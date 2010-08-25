@@ -23,6 +23,7 @@
 
 function main_menu($url) {
   $menu = array('' => t('Overview'), 'gather' => t('Gather data'));
+  if (auth()) $menu['logout'] = t('Log out');
   $out = '<ul>';
   foreach ($menu as $link => $text) {
     $out .= '<li>'. l($link, $text) .'</li>';

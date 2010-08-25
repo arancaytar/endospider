@@ -1,11 +1,11 @@
 <?php
 
 function form($id) {
-  if (!$form = form_build($id)) return "FORM NOT FOUND";
+  if (!$form = form_build($id, func_get_args())) return "FORM NOT FOUND";
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $input = form_check_input($form, $_POST);
     $return = form_execute($id, $input);
-    if (!headers_sent() && $return) {
+    if (!headers_sent() && $return !== FALSE) {
       header("Location: ". url($return), 303);
       exit;
     }
@@ -13,10 +13,11 @@ function form($id) {
   return form_render($form);
 }
 
-function form_build($id) {
+function form_build($id, $args) {
+  array_shift($args);
   $function = 'form_'. $id;
   if (function_exists($function)) {
-    $form = $function();
+    $form = call_user_func_array($function, $args);
     $form['#id'] = $id;
   }
   return $form;
@@ -73,7 +74,14 @@ function form_render_field($field, $id, $prefix) {
 
 function form_render_field_text($field, $name) {
   $id = preg_replace('/[\[\]]+/', '-', $name);
-  return '<label for="'. $id .'">'. $field['#title'] .'</label><input type="text" id="'. $id .'" name="'. $name .'" />';
+  return '<label for="'. $id .'">'. $field['#title'] .'</label><input type="text" id="'. $id .'" name="'. $name .'"' . attrs($field) . ' />';
+}
+
+function attrs($field) {
+  $s = ' ';
+  if (isset($field['#attributes'])) foreach ($field['#attributes'] as $name => $value) $s .= "$name='$value' ";
+  if (isset($field['#value'])) $s .= 'value="' . $field['#value'] . '" ';
+  return $s;
 }
 
 function form_render_field_hidden($field, $name) {

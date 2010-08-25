@@ -8,6 +8,7 @@ require_once "includes/auth.php";
 require_once "includes/database.php";
 require_once "includes/form.php";
 require_once "includes/http.php";
+require_once "includes/influence.php";
 require_once "includes/json.php";
 require_once "includes/locale.php";
 require_once "includes/spider.php";
@@ -32,7 +33,12 @@ require_once "template/html.php";
 include_once 'config.php';
 
 function main() {
-  $page = alias_execute(isset($_GET['q']) ? $_GET['q'] : '');
+  if (!preg_match('/signature/', @$_GET['q']) && !auth()) {
+    $page = page_auth_login('valid users');
+  }
+  else {
+    $page = alias_execute(isset($_GET['q']) ? $_GET['q'] : '');
+  }
   if (!is_object($page)) $page = (object)(array('content' => $page));
   if (empty($page->content_type)) $page->content_type = 'xhtml';
   if (empty($page->code)) $page->code = 200;

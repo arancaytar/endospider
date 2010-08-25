@@ -30,7 +30,9 @@ function page_overview() {
   );
 
   foreach ($regions as $region) {
-    $row[] = array(
+    if (!auth('view') && !auth('view', $region['region'])) continue;
+    
+    $row = array(
       'region' => rl($region['region']),
       'delegate' => nl($region['delegate']),
       'size' => $region['size'],
@@ -39,9 +41,15 @@ function page_overview() {
       'scan_started' => $region['scan_started'],
       'scan_length' => interval($region['scan_length']),
     );
+
+    if (auth('gather') || auth('gather', $region['region'])) {
+      $header['rescan'] = t('Rescan');
+      $row['rescan'] = l('gather/' . $region['region'], '<img src="' . url('style/images/reload.png') . '" />');
+    }
+    $rows[] = $row;
   }
   
-  $out .= html_table($header, $row);
+  $out .= html_table($header, $rows);
   
   $page->content = $out;
   return $page;

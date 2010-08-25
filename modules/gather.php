@@ -1,15 +1,16 @@
 <?php
 
-function page_gather() {
+
+function page_gather($region = NULL) {
   file_put_contents('/tmp/endostatus', '');
-	if (!auth()) return page_auth_login();
+	if (!auth('gather', $region)) return page_auth_login('administrators');
   
   $page->title = t('Gathering data');
   
   $page->content = "<p>The region entered will be scanned completely and saved in the database. 
   <strong>Caution:</strong> The scanner's database model is static and can only save one state of a region. Before beginning the scan, all previous data will be discarded irreversibly.</p>";
   
-  $page->content .= form('gather');
+  $page->content .= form('gather', $region);
   $page->content .= '
   <link rel="stylesheet" type="text/css" href="style/status.css" />
   <div id="status-wrapper">
@@ -43,9 +44,11 @@ function interval($time) {
   return implode(" ", $out);
 }*/
 
-function form_gather() {
+function form_gather($region = NULL) {
   $form['region'] = array(
     '#type' => 'text',
+    '#attributes' => $region ? array('readonly' => TRUE) : array(),
+    '#value' => $region,
     '#title' => t('Region'),
   );
   $form['ajax'] = array(
@@ -61,6 +64,7 @@ function form_gather() {
 }
 
 function form_gather_submit($values) {
+  if (!auth('gather', $values['region'])) return '';
   if (!$values['ajax']) {
     header('Content-type: text/plain');    
   }
@@ -89,6 +93,7 @@ function gather_index($region) {
   db_write('region', $region, $meta, DB_REPLACE);
   status(t('Now indexing WA nations in region...'));
   $un = 0;
+  $requests = 0;
   for ($i = 0; $i < $meta['size']; $i += 15) {
     status(t('  Downloading list of nations from !start to !end', array('!start' => $i, '!end' => $i + 14)));
     do {
@@ -138,6 +143,8 @@ function gather_scan($region) {
         ), 
         DB_UPDATE
       );
+      $ej = spider_nation_ejection($nation);
+      file_put_contents("ejection.txt", "$nation,{$ej['ban']},{$ej['eject']},{$nation_data['influence']}\n", FILE_APPEND);
       $endorsements = array();
       foreach ($nation_data['endorsements'] as $giver) {
         $endorsements[] = array('giving' => $giver, 'receiving' => $nation);
